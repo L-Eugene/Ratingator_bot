@@ -1,0 +1,31 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+
+Description: Bot to track team rating on rating.chgk.info and perform some routine tasks.
+
+Parameters:
+  TelegramBotToken:
+    Type: String
+    Description: Token to use for communication with Telegram severs
+    NoEcho: true
+
+Resources:
+  SecretStorage:
+    Type: AWS::SecretsManager::Secret
+    Properties:
+      Name: rating_bot_token
+      SecretString: !Ref TelegramBotToken
+
+  ProcessCommandFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: bot/
+      Runtime: ruby2.7
+      Handler: main.message_handler
+      Policies:
+        - Version: '2012-10-17'
+          Statement:
+            - Sid: AWSSecretsManagerGetSecretValuePolicy
+              Effect: Allow
+              Action: secretsmanager:GetSecretValue
+              Resource: !Ref SecretStorage

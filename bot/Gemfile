@@ -1,0 +1,5 @@
+source "https://rubygems.org"
+
+gem "telegram-bot-ruby", "~> 0.16.0"
+
+ruby '~> 2.7.0'

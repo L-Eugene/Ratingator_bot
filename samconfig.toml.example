@@ -1,0 +1,16 @@
+version = 0.1
+[default]
+[default.deploy]
+[default.deploy.parameters]
+# CloudFormation stack name
+stack_name = "ratingator-bot"
+
+# s3 bucket arn (will be used to upload zip files)
+s3_bucket = "<s3-Arn-Value>"
+s3_prefix = "ratingator-bot"
+region = "eu-west-1"
+confirm_changeset = true
+capabilities = "CAPABILITY_IAM"
+
+# TelegramBotToken will be stored in Secrets Manager
+parameter_overrides = "TelegramBotToken=\"<Telegram-Bot-Token-Value>\""
