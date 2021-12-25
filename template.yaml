@@ -9,6 +9,11 @@ Parameters:
     Description: Token to use for communication with Telegram severs
     NoEcho: true
 
+Globals:
+  Function:
+    CodeUri: bot/
+    Runtime: ruby2.7
+
 Resources:
   SecretStorage:
     Type: AWS::SecretsManager::Secret
@@ -16,11 +21,24 @@ Resources:
       Name: rating_bot_token
       SecretString: !Ref TelegramBotToken
 
+  ChatDBTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: ChatID
+          AttributeType: N
+      BillingMode: PROVISIONED
+      ProvisionedThroughput:
+        ReadCapacityUnits: 10
+        WriteCapacityUnits: 10
+      TableName: rating_bot_table
+      KeySchema:
+        - AttributeName: ChatID
+          KeyType: HASH
+
   ProcessCommandFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: bot/
-      Runtime: ruby2.7
       Handler: main.message_handler
       Policies:
         - Version: '2012-10-17'
@@ -29,3 +47,14 @@ Resources:
               Effect: Allow
               Action: secretsmanager:GetSecretValue
               Resource: !Ref SecretStorage
+            - Sid: SpecificTable
+              Effect: Allow
+              Action:
+                - "dynamodb:Get*"
+                - "dynamodb:BatchGet*"
+                - "dynamodb:Scan"
+              Resource: 
+                Fn::Join:
+                  - ''
+                  - - "arn:aws:dynamodb:*:*:table/"
+                    - !Ref ChatDBTable
