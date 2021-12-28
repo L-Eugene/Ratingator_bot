@@ -36,10 +36,40 @@ Resources:
         - AttributeName: ChatID
           KeyType: HASH
 
+  SendStatsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: stats.weekly
+      Timeout: 150
+      Policies:
+        - Version: '2012-10-17'
+          Statement:
+            - Sid: AWSSecretsManagerGetSecretValuePolicy
+              Effect: Allow
+              Action: secretsmanager:GetSecretValue
+              Resource: !Ref SecretStorage
+            - Sid: SpecificTable
+              Effect: Allow
+              Action:
+                - "dynamodb:Get*"
+                - "dynamodb:BatchGet*"
+                - "dynamodb:Scan"
+              Resource: 
+                Fn::Join:
+                  - ''
+                  - - "arn:aws:dynamodb:*:*:table/"
+                    - !Ref ChatDBTable
+      Events:
+        WeeklyScheduleEvent:
+          Type: Schedule
+          Properties:
+            Schedule: cron(59 16 ? * THU *)
+
   ProcessCommandFunction:
     Type: AWS::Serverless::Function
     Properties:
       Handler: main.message_handler
+      Timeout: 30
       Policies:
         - Version: '2012-10-17'
           Statement:
