@@ -31,6 +31,19 @@ def medal(number)
   "#{char} #{number}"
 end
 
+def type_char(tournament_type)
+  case tournament_type
+  when 'Асинхрон'
+    'А'
+  when 'Синхрон'
+    'С'
+  when 'Обычный'
+    'Т'
+  else
+    '?'
+  end
+end
+
 def weekly(event:, context:)
   secret = telegram_token
 
@@ -69,7 +82,7 @@ def weekly(event:, context:)
 
       [
         result.included_in_rating ? "#{result.diff_bonus} _(#{result.bonus_b})_" : 'unrated',
-        "*[#{tournament.type_char}]*",
+        "*[#{type_char(tournament.type_name)}]*",
         "_\"#{tournament.name}\"_",
         "*место* #{result.position} #{ "(#{result.predicted_position})" if result.included_in_rating }",
         "*взято* #{result.questions_total}/#{tournament.questions_total}"

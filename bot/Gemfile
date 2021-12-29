@@ -2,7 +2,7 @@ source "https://rubygems.org"
 
 gem "bundler", "~> 2.1.0"
 gem "telegram-bot-ruby", "~> 0.16.0"
-gem "chgk_rating", "~> 1.0.0", git: 'https://github.com/L-Eugene/ChgkRating.git', branch: 'mappings'
+gem "chgk_rating", "~> 2.0.0", git: 'https://github.com/L-Eugene/ChgkRating.git', branch: 'map'
 #gem "scorpio", "~> 0.5.0"
 
 ruby '~> 2.7.0'
