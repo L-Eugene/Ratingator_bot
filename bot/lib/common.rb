@@ -13,12 +13,35 @@ def telegram_token
   get_secret_value_response.secret_string
 end
 
+def dynamo
+  require 'aws-sdk-dynamodb'
+  Aws::DynamoDB::Client.new(region: ENV['AWS_REGION'])
+end
+
 def chat_list
   return { items: JSON.parse(File.read('../chat_list.json')) } unless ENV.key? 'AWS_REGION'
 
-  require 'aws-sdk-dynamodb'
-  dynamodb_client = Aws::DynamoDB::Client.new(region: ENV['AWS_REGION'])
-
-  dynamodb_client.scan(table_name: 'rating_bot_table')
+  dynamo.scan(table_name: 'rating_bot_table')
 end
 
+def chat_watch(chat, team)
+  dynamo.put_item(
+    item: { ChatID: chat, TeamID: team },
+    table_name: 'rating_bot_table'
+  )
+
+  true
+rescue
+  false
+end
+
+def chat_unwatch(chat)
+  dynamo.delete_item(
+    key: { ChatID: chat },
+    table_name: 'rating_bot_table'
+  )
+
+  true
+rescue
+  false
+end

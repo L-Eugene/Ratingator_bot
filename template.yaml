@@ -8,6 +8,11 @@ Parameters:
     Type: String
     Description: Token to use for communication with Telegram severs
     NoEcho: true
+  AllowSelfRegistration:
+    Type: Number
+    AllowedValues: [0, 1]
+    Default: 1
+    Description: Set this to 0 to deny /watch and /unwatch bot commands
 
 Globals:
   Function:
@@ -51,8 +56,6 @@ Resources:
             - Sid: SpecificTable
               Effect: Allow
               Action:
-                - "dynamodb:Get*"
-                - "dynamodb:BatchGet*"
                 - "dynamodb:Scan"
               Resource: 
                 Fn::Join:
@@ -64,12 +67,20 @@ Resources:
           Type: Schedule
           Properties:
             Schedule: cron(59 16 ? * THU *)
+  SendStatsLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub "/aws/lambda/${SendStatsFunction}"
+      RetentionInDays: 14
 
   ProcessCommandFunction:
     Type: AWS::Serverless::Function
     Properties:
       Handler: main.message_handler
       Timeout: 30
+      Environment:
+        Variables:
+          BOT_ALLOW_SELF_REGISTRATION: !Ref AllowSelfRegistration
       Policies:
         - Version: '2012-10-17'
           Statement:
@@ -80,11 +91,31 @@ Resources:
             - Sid: SpecificTable
               Effect: Allow
               Action:
-                - "dynamodb:Get*"
-                - "dynamodb:BatchGet*"
+                - "dynamodb:GetItem"
+                - "dynamodb:DeleteItem"
+                - "dynamodb:PutItem"
                 - "dynamodb:Scan"
-              Resource: 
-                Fn::Join:
-                  - ''
-                  - - "arn:aws:dynamodb:*:*:table/"
-                    - !Ref ChatDBTable
+              Resource: !Sub "arn:aws:dynamodb:*:*:table/${ChatDBTable}"
+#                Fn::Join:
+#                  - ''
+#                  - - "arn:aws:dynamodb:*:*:table/"
+#                    - !Ref ChatDBTable
+      Events:
+        TelegramWebHook:
+          Type: Api
+          Properties:
+            Path: '/hook'
+            Method: post
+  ProcessCommandLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub "/aws/lambda/${ProcessCommandFunction}"
+      RetentionInDays: 14
+
+Outputs:
+  TelegramWebHookApi:
+    Description: "WebHook URL"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hook/"
+  SetWebhookCommand:
+    Description: "Use this command to set WebHook"
+    Value: !Sub "curl -F \"url=https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hook/\" https://api.telegram.org/bot${TelegramBotToken}/setWebhook"
