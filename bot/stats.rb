@@ -1,9 +1,3 @@
-require 'aws-sdk-secretsmanager' if ENV.key? 'AWS_REGION'
-require 'aws-sdk-dynamodb' if ENV.key? 'AWS_REGION'
-
-require 'bundler'
-Bundler.setup(:default)
-
 require_relative 'lib/common.rb'
 
 require 'telegram/bot'
@@ -108,4 +102,6 @@ def weekly(event:, context:)
       MESSAGE
     end
   end
+
+  { statusCode: 200 }
 end
