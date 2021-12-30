@@ -64,20 +64,21 @@ def weekly(event:, context:)
 
     city_position = city_ratings.find_index { |rating| rating.team.id == team.id  }
     neighbours = Range.new([0, city_position - 1].max, [city_ratings.size - 1, city_position + 1].min).to_a.map do |index|
-      "#{index + 1}. #{city_ratings[index].team.eager_load!.name} (#{city_ratings[index].rating})"
+      city_ratings[index].team.eager_load!
+      "#{index + 1}. [#{city_ratings[index].team.name}](https://rating.chgk.info/team/#{city_ratings[index].team.id}) (#{city_ratings[index].rating})"
     end
 
     # Tournaments influenced last rating 
     tournaments = team.tournaments(season_id: 'last').select do |tournament|
       tournament.eager_load!
-      tournament.date_end <= ratings[:last].date  && tournament.date_end > ratings[:prev].date
+      tournament.date_end <= ratings[:last].date  && tournament.date_end > team.ratings[-4].date
     end.map do |tournament|
       result = tournament.team_list.select { |item| item.team.id == team.id }.first
 
       [
         result.included_in_rating ? "#{result.diff_bonus} _(#{result.bonus_b})_" : 'unrated',
         "*[#{type_char(tournament.type_name)}]*",
-        "_\"#{tournament.name}\"_",
+        "[#{tournament.name}](https://rating.chgk.info/tournament/#{tournament.id})",
         "*место* #{result.position} #{ "(#{result.predicted_position})" if result.included_in_rating }",
         "*взято* #{result.questions_total}/#{tournament.questions_total}"
       ].join(' ')
