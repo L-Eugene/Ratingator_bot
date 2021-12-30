@@ -78,11 +78,45 @@ Resources:
         - AttributeName: ChatID
           KeyType: HASH
 
+  StatsSqsQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      VisibilityTimeout: 250
+
+  CreateStatsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: stats.initiate
+      Timeout: 30
+      Environment:
+        Variables:
+          SQS_QUEUE_URL: !Ref StatsSqsQueue
+      Policies:
+        - Version: '2012-10-17'
+          Statement:
+            - Sid: SpecificTable
+              Effect: Allow
+              Action:
+                - "dynamodb:Scan"
+              Resource: !Sub "arn:aws:dynamodb:*:*:table/${ChatDBTable}"
+        - SQSSendMessagePolicy:
+            QueueName: !GetAtt StatsSqsQueue.QueueName
+      Events:
+        WeeklyScheduleEvent:
+          Type: Schedule
+          Properties:
+            Schedule: cron(59 15 ? * THU *)
+  CreateStatsLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub "/aws/lambda/${CreateStatsFunction}"
+      RetentionInDays: 14
+
   SendStatsFunction:
     Type: AWS::Serverless::Function
     Properties:
       Handler: stats.weekly
-      Timeout: 600
+      Timeout: 200
       Policies:
         - Version: '2012-10-17'
           Statement:
@@ -98,11 +132,14 @@ Resources:
               Action:
                 - "dynamodb:Scan"
               Resource: !Sub "arn:aws:dynamodb:*:*:table/${ChatDBTable}"
+        - SQSPollerPolicy:
+            QueueName: !GetAtt StatsSqsQueue.QueueName
       Events:
-        WeeklyScheduleEvent:
-          Type: Schedule
+        StatSQSEvent:
+          Type: SQS
           Properties:
-            Schedule: cron(59 15 ? * THU *)
+            Queue: !GetAtt StatsSqsQueue.Arn
+            BatchSize: 1
   SendStatsLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
