@@ -62,7 +62,7 @@ def message_handler(event:, context:)
 
     begin
       team = ChgkRating.client.team(team_id)
-    rescue
+    rescue ChgkRating::Error => e
       telegram.api.send_message(chat_id: update.message.chat.id, text: "Ошибка: #{JSON.parse(e.message)["error"]["message"]}")
       return SUCCESS_RESULT
     end
