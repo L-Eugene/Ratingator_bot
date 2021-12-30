@@ -2,6 +2,7 @@ require 'telegram/bot'
 require 'json'
 
 def telegram_token
+  return ENV['TELEGRAM_TOKEN'] if ENV.key? 'TELEGRAM_TOKEN'
   return File.read('../telegram_token.txt').chomp unless ENV.key? 'AWS_REGION'
 
   require 'aws-sdk-secretsmanager'

@@ -4,24 +4,61 @@ Transform: AWS::Serverless-2016-10-31
 Description: Bot to track team rating on rating.chgk.info and perform some routine tasks.
 
 Parameters:
+  # Telegram bot token value
+  # See https://core.telegram.org/bots#3-how-do-i-create-a-bot for details
   TelegramBotToken:
     Type: String
     Description: Token to use for communication with Telegram severs
     NoEcho: true
+
+  # Will use SecretsManager if value set to true.
+  # Set this to true only in case you really need such security level.
+  KeepTokensSecret:
+    Type: String
+    Description: |-
+      Set to true to store Telegram token in SecretsManager. Will be stored as Environment variable else.
+    AllowedValues:
+      - 'true'
+      - 'false'
+    Default: 'false'
+
+  # Setting this variable to 0 will deny users from configuring team tracking by bot commands.
+  # In that case bot owner will have to create records in DynamoDB manually.
+  #   Record example: { 'ChatID' => 123456789, 'TeamID' => 1 }
+  #   ChatID is Telegram ID of chat to sent statistics to. TeamID is team ID on rating.chgk.net
   AllowSelfRegistration:
-    Type: Number
-    AllowedValues: [0, 1]
-    Default: 1
-    Description: Set this to 0 to deny /watch and /unwatch bot commands
+    Type: String
+    Description: Set this to false to deny /watch and /unwatch bot commands
+    AllowedValues: 
+      - 'true'
+      - 'false'
+    Default: 'true'
+
+Conditions:
+  # Secure Storage with all required policy rules will be created
+  KeepTokenSecretCond: !Equals
+    - !Ref KeepTokensSecret
+    - 'true'
+
+  # Environment variable will be created to keep token
+  KeepTokenEnvCond: !Not
+    - Condition: KeepTokenSecretCond
 
 Globals:
   Function:
     CodeUri: bot/
     Runtime: ruby2.7
+    Environment:
+      Variables:
+        TELEGRAM_TOKEN: !If
+          - KeepTokenEnvCond
+          - !Ref TelegramBotToken
+          - !Ref AWS::NoValue
 
 Resources:
   SecretStorage:
     Type: AWS::SecretsManager::Secret
+    Condition: KeepTokenSecretCond
     Properties:
       Name: rating_bot_token
       SecretString: !Ref TelegramBotToken
@@ -49,19 +86,18 @@ Resources:
       Policies:
         - Version: '2012-10-17'
           Statement:
-            - Sid: AWSSecretsManagerGetSecretValuePolicy
-              Effect: Allow
-              Action: secretsmanager:GetSecretValue
-              Resource: !Ref SecretStorage
+            - !If
+              - KeepTokenSecretCond
+              - Sid: AWSSecretsManagerGetSecretValuePolicy
+                Effect: Allow
+                Action: secretsmanager:GetSecretValue
+                Resource: !Ref SecretStorage
+              - !Ref AWS::NoValue
             - Sid: SpecificTable
               Effect: Allow
               Action:
                 - "dynamodb:Scan"
-              Resource: 
-                Fn::Join:
-                  - ''
-                  - - "arn:aws:dynamodb:*:*:table/"
-                    - !Ref ChatDBTable
+              Resource: !Sub "arn:aws:dynamodb:*:*:table/${ChatDBTable}"
       Events:
         WeeklyScheduleEvent:
           Type: Schedule
@@ -80,14 +116,17 @@ Resources:
       Timeout: 30
       Environment:
         Variables:
-          BOT_ALLOW_SELF_REGISTRATION: !Ref AllowSelfRegistration
+          ALLOW_SELF_REGISTRATION: !Ref AllowSelfRegistration
       Policies:
         - Version: '2012-10-17'
           Statement:
-            - Sid: AWSSecretsManagerGetSecretValuePolicy
-              Effect: Allow
-              Action: secretsmanager:GetSecretValue
-              Resource: !Ref SecretStorage
+            - !If
+              - KeepTokenSecretCond
+              - Sid: AWSSecretsManagerGetSecretValuePolicy
+                Effect: Allow
+                Action: secretsmanager:GetSecretValue
+                Resource: !Ref SecretStorage
+              - !Ref AWS::NoValue
             - Sid: SpecificTable
               Effect: Allow
               Action:
@@ -96,10 +135,6 @@ Resources:
                 - "dynamodb:PutItem"
                 - "dynamodb:Scan"
               Resource: !Sub "arn:aws:dynamodb:*:*:table/${ChatDBTable}"
-#                Fn::Join:
-#                  - ''
-#                  - - "arn:aws:dynamodb:*:*:table/"
-#                    - !Ref ChatDBTable
       Events:
         TelegramWebHook:
           Type: Api
@@ -113,9 +148,12 @@ Resources:
       RetentionInDays: 14
 
 Outputs:
+  # API endpoint URL
   TelegramWebHookApi:
     Description: "WebHook URL"
     Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hook/"
+
+  # CURL command to setup webhook
   SetWebhookCommand:
     Description: "Use this command to set WebHook"
     Value: !Sub "curl -F \"url=https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hook/\" https://api.telegram.org/bot${TelegramBotToken}/setWebhook"

@@ -1,4 +1,5 @@
 require 'telegram/bot'
+require 'chgk_rating'
 require 'json'
 
 require_relative 'lib/common.rb'
@@ -53,20 +54,26 @@ def message_handler(event:, context:)
   
   return SUCCESS_RESULT if update&.message.nil?
 
-  puts 'Allow registration', ENV['BOT_ALLOW_SELF_REGISTRATION']
-  
   case update.message.text
   when %r{^/watch\s[0-9]+}
-    return self_registration_disabled(message) if ENV['BOT_ALLOW_SELF_REGISTRATION'].to_i.zero?
+    return self_registration_disabled(update.message) if ENV['ALLOW_SELF_REGISTRATION'] == 'false'
 
     team_id = update.message.text.match(%r{/watch\s([0-9]+)})[1].to_i
+
+    begin
+      team = ChgkRating.client.team(team_id)
+    rescue
+      telegram.api.send_message(chat_id: update.message.chat.id, text: "Ошибка: #{JSON.parse(e.message)["error"]["message"]}")
+      return SUCCESS_RESULT
+    end
+
     if chat_watch(update.message.chat.id, team_id)
-      telegram.api.send_message(chat_id: update.message.chat.id, text: "Слежение за командой №#{team_id} включено.")
+      telegram.api.send_message(chat_id: update.message.chat.id, text: "Слежение за командой #{team.name} (##{team_id}) включено.")
     else
       telegram.api.send_message(chat_id: update.message.chat.id, text: "Не удалось включить слежение за командой.")
     end
   when %r{^/unwatch}
-    return self_registration_disabled(message) if ENV['BOT_ALLOW_SELF_REGISTRATION'].to_i.zero?
+    return self_registration_disabled(update.message) if ENV['ALLOW_SELF_REGISTRATION'] == 'false'
 
     if chat_unwatch(update.message.chat.id)
       telegram.api.send_message(chat_id: update.message.chat.id, text: "Слежение за командой прекращено.")

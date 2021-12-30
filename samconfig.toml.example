@@ -13,4 +13,11 @@ confirm_changeset = true
 capabilities = "CAPABILITY_IAM"
 
 # TelegramBotToken will be stored in Secrets Manager
-parameter_overrides = "TelegramBotToken=\"<Telegram-Bot-Token-Value>\""
+parameter_overrides = [
+  "TelegramBotToken=\"<Telegram-Bot-Token-Value>\"",
+  "AllowSelfRegistration=false",
+  "KeepTokensSecret=false"
+]
+[default.build]
+[default.build.parameters]
+use_container = true
