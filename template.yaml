@@ -82,7 +82,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: stats.weekly
-      Timeout: 150
+      Timeout: 600
       Policies:
         - Version: '2012-10-17'
           Statement:
@@ -102,7 +102,7 @@ Resources:
         WeeklyScheduleEvent:
           Type: Schedule
           Properties:
-            Schedule: cron(59 16 ? * THU *)
+            Schedule: cron(59 15 ? * THU *)
   SendStatsLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
