@@ -22,7 +22,7 @@ Parameters:
       - 'false'
     Default: 'false'
 
-  # Setting this variable to 0 will deny users from configuring team tracking by bot commands.
+  # Setting this variable to false will deny users from configuring team tracking by bot commands.
   # In that case bot owner will have to create records in DynamoDB manually.
   #   Record example: { 'ChatID' => 123456789, 'TeamID' => 1 }
   #   ChatID is Telegram ID of chat to sent statistics to. TeamID is team ID on rating.chgk.net

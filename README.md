@@ -40,6 +40,14 @@ Then perform next steps:
 1. Run `sam deploy` to start deployment. Deployment process will print API endpoint URL that can be used as WebHook if needed.
 1. WebHook is needed for bot to accept commands from usees. You can enable WebHooks using example curl command printed by deployment process. 
 
+### Template parameters
+
+Template accepts 3 parameters:
+
+1. `TelegramBotToken` - secret token you get from BotFather
+1. `KeepTokensSecret` - flag to choose whether you want AWS to keep your token in SecretsManager or as environment variable. Values: `true`/`false`
+1. `AllowSelfRegistration` - flag to choose if we want to allow users to enable team tracking manually with `/watch` command. Values: `true`/`false`
+
 ## Author
 
 Eugene Lapeko
