@@ -1,4 +1,3 @@
-require 'telegram/bot'
 require 'json'
 
 def telegram_token
@@ -23,7 +22,7 @@ end
 
 def chat_watch(chat, team)
   dynamo.put_item(
-    item: { ChatID: chat, TeamID: team },
+    item: { chat_id: chat, team_id: team },
     table_name: ENV['DYNAMO_TABLE']
   )
 
@@ -34,7 +33,7 @@ end
 
 def chat_unwatch(chat)
   dynamo.delete_item(
-    key: { ChatID: chat },
+    key: { chat_id: chat },
     table_name: ENV['DYNAMO_TABLE']
   )
 

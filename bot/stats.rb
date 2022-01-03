@@ -114,7 +114,7 @@ end
 def initiate(event:, context:)
   require 'aws-sdk-sqs'
   messages = chat_list[:items].inject(Hash.new { |h, k| h[k] = [] }) do |hash, chat| 
-    hash[chat['TeamID'].to_i] << chat['ChatID'].to_i; 
+    hash[chat['team_id'].to_i] << chat['chat_id'].to_i; 
     hash
   end.each do |team, chats|
     sqs = Aws::SQS::Client.new(region: ENV['AWS_REGION'])
