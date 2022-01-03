@@ -54,36 +54,35 @@ Globals:
           - KeepTokenEnvCond
           - !Ref TelegramBotToken
           - !Ref AWS::NoValue
+        SECRET_NAME: !If
+          - KeepTokenSecretCond
+          - !Ref SecretStorage
+          - !Ref AWS::NoValue
+        DYNAMO_TABLE: !Ref ChatDBTable
 
 Resources:
   SecretStorage:
     Type: AWS::SecretsManager::Secret
     Condition: KeepTokenSecretCond
     Properties:
-      Name: rating_bot_token
       SecretString: !Ref TelegramBotToken
 
   ChatDBTable:
-    Type: AWS::DynamoDB::Table
+    Type: AWS::Serverless::SimpleTable
     Properties:
-      AttributeDefinitions:
-        - AttributeName: ChatID
-          AttributeType: N
-      BillingMode: PROVISIONED
+      PrimaryKey:
+        Name: ChatID
+        Type: Number
       ProvisionedThroughput:
         ReadCapacityUnits: 10
         WriteCapacityUnits: 10
-      TableName: rating_bot_table
-      KeySchema:
-        - AttributeName: ChatID
-          KeyType: HASH
 
   StatsSqsQueue:
     Type: AWS::SQS::Queue
     Properties:
       VisibilityTimeout: 250
 
-  CreateStatsFunction:
+  TriggerStatsFunction:
     Type: AWS::Serverless::Function
     Properties:
       Handler: stats.initiate
@@ -92,13 +91,8 @@ Resources:
         Variables:
           SQS_QUEUE_URL: !Ref StatsSqsQueue
       Policies:
-        - Version: '2012-10-17'
-          Statement:
-            - Sid: SpecificTable
-              Effect: Allow
-              Action:
-                - "dynamodb:Scan"
-              Resource: !Sub "arn:aws:dynamodb:*:*:table/${ChatDBTable}"
+        - DynamoDBReadPolicy:
+            TableName: !Ref ChatDBTable
         - SQSSendMessagePolicy:
             QueueName: !GetAtt StatsSqsQueue.QueueName
       Events:
@@ -106,10 +100,10 @@ Resources:
           Type: Schedule
           Properties:
             Schedule: cron(59 15 ? * THU *)
-  CreateStatsLogGroup:
+  TriggerStatsLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
-      LogGroupName: !Sub "/aws/lambda/${CreateStatsFunction}"
+      LogGroupName: !Sub "/aws/lambda/${TriggerStatsFunction}"
       RetentionInDays: 14
 
   SendStatsFunction:
@@ -118,22 +112,15 @@ Resources:
       Handler: stats.weekly
       Timeout: 200
       Policies:
-        - Version: '2012-10-17'
-          Statement:
-            - !If
-              - KeepTokenSecretCond
-              - Sid: AWSSecretsManagerGetSecretValuePolicy
-                Effect: Allow
-                Action: secretsmanager:GetSecretValue
-                Resource: !Ref SecretStorage
-              - !Ref AWS::NoValue
-            - Sid: SpecificTable
-              Effect: Allow
-              Action:
-                - "dynamodb:Scan"
-              Resource: !Sub "arn:aws:dynamodb:*:*:table/${ChatDBTable}"
+        - DynamoDBReadPolicy:
+            TableName: !Ref ChatDBTable
         - SQSPollerPolicy:
             QueueName: !GetAtt StatsSqsQueue.QueueName
+        - !If
+          - KeepTokenSecretCond
+          - AWSSecretsManagerGetSecretValuePolicy:
+              SecretArn: !Ref SecretStorage
+          - !Ref AWS::NoValue
       Events:
         StatSQSEvent:
           Type: SQS
@@ -155,23 +142,13 @@ Resources:
         Variables:
           ALLOW_SELF_REGISTRATION: !Ref AllowSelfRegistration
       Policies:
-        - Version: '2012-10-17'
-          Statement:
-            - !If
-              - KeepTokenSecretCond
-              - Sid: AWSSecretsManagerGetSecretValuePolicy
-                Effect: Allow
-                Action: secretsmanager:GetSecretValue
-                Resource: !Ref SecretStorage
-              - !Ref AWS::NoValue
-            - Sid: SpecificTable
-              Effect: Allow
-              Action:
-                - "dynamodb:GetItem"
-                - "dynamodb:DeleteItem"
-                - "dynamodb:PutItem"
-                - "dynamodb:Scan"
-              Resource: !Sub "arn:aws:dynamodb:*:*:table/${ChatDBTable}"
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ChatDBTable
+        - !If
+          - KeepTokenSecretCond
+          - AWSSecretsManagerGetSecretValuePolicy:
+              SecretArn: !Ref SecretStorage
+          - !Ref AWS::NoValue
       Events:
         TelegramWebHook:
           Type: Api

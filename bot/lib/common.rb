@@ -6,12 +6,8 @@ def telegram_token
   return File.read('../telegram_token.txt').chomp unless ENV.key? 'AWS_REGION'
 
   require 'aws-sdk-secretsmanager'
-  secret_name = 'rating_bot_token'
-
   client = Aws::SecretsManager::Client.new(region: ENV['AWS_REGION'])
-  get_secret_value_response = client.get_secret_value(secret_id: secret_name)
-    
-  get_secret_value_response.secret_string
+  client.get_secret_value(secret_id: ENV['SECRET_NAME']).secret_string
 end
 
 def dynamo
@@ -22,13 +18,13 @@ end
 def chat_list
   return { items: JSON.parse(File.read('../chat_list.json')) } unless ENV.key? 'AWS_REGION'
 
-  dynamo.scan(table_name: 'rating_bot_table')
+  dynamo.scan(table_name: ENV['DYNAMO_TABLE'])
 end
 
 def chat_watch(chat, team)
   dynamo.put_item(
     item: { ChatID: chat, TeamID: team },
-    table_name: 'rating_bot_table'
+    table_name: ENV['DYNAMO_TABLE']
   )
 
   true
@@ -39,7 +35,7 @@ end
 def chat_unwatch(chat)
   dynamo.delete_item(
     key: { ChatID: chat },
-    table_name: 'rating_bot_table'
+    table_name: ENV['DYNAMO_TABLE']
   )
 
   true
