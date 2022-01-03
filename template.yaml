@@ -112,8 +112,6 @@ Resources:
       Handler: stats.weekly
       Timeout: 200
       Policies:
-        - DynamoDBReadPolicy:
-            TableName: !Ref ChatDBTable
         - SQSPollerPolicy:
             QueueName: !GetAtt StatsSqsQueue.QueueName
         - !If
