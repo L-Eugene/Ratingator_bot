@@ -24,8 +24,8 @@ Parameters:
 
   # Setting this variable to false will deny users from configuring team tracking by bot commands.
   # In that case bot owner will have to create records in DynamoDB manually.
-  #   Record example: { 'ChatID' => 123456789, 'TeamID' => 1 }
-  #   ChatID is Telegram ID of chat to sent statistics to. TeamID is team ID on rating.chgk.net
+  #   Record example: { 'chat_id' => 123456789, 'team_id' => 1 }
+  #   chat_id is Telegram ID of chat to sent statistics to. team_id is team ID on rating.chgk.net
   AllowSelfRegistration:
     Type: String
     Description: Set this to false to deny /watch and /unwatch bot commands
@@ -71,7 +71,7 @@ Resources:
     Type: AWS::Serverless::SimpleTable
     Properties:
       PrimaryKey:
-        Name: ChatID
+        Name: chat_id
         Type: Number
       ProvisionedThroughput:
         ReadCapacityUnits: 10
@@ -82,11 +82,24 @@ Resources:
     Properties:
       VisibilityTimeout: 250
 
+  # Using Makefile here because of bug https://github.com/aws/aws-lambda-builders/issues/177
+  BotLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      ContentUri: layer
+      CompatibleRuntimes:
+        - ruby2.7
+      RetentionPolicy: Delete
+    Metadata:
+      BuildMethod: makefile
+
   TriggerStatsFunction:
     Type: AWS::Serverless::Function
     Properties:
       Handler: stats.initiate
       Timeout: 30
+      Layers:
+        - !Ref BotLayer
       Environment:
         Variables:
           SQS_QUEUE_URL: !Ref StatsSqsQueue
@@ -111,6 +124,8 @@ Resources:
     Properties:
       Handler: stats.weekly
       Timeout: 200
+      Layers:
+        - !Ref BotLayer
       Policies:
         - SQSPollerPolicy:
             QueueName: !GetAtt StatsSqsQueue.QueueName
@@ -136,6 +151,8 @@ Resources:
     Properties:
       Handler: main.message_handler
       Timeout: 30
+      Layers:
+        - !Ref BotLayer
       Environment:
         Variables:
           ALLOW_SELF_REGISTRATION: !Ref AllowSelfRegistration
