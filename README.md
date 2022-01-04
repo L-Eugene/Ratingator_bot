@@ -2,7 +2,7 @@
 
 ## Description
 
-Telegram bot for tracking "What? When? Where?" team tating on [rating site](https://rating.chgk.info/). 
+Telegram bot for tracking intellectual games team rating on [rating site](https://rating.chgk.info/). 
 It is built using AWS Serverless tools and can be easily deployed with SAM.
 
 ## Features
@@ -14,12 +14,12 @@ Once a week (schedule can be changed on deployment stage) bot is sending statist
 To enable statistic tracking run `/watch 12345` command. 12345 here is team numeric id from rating site. To disable statistic tracking run `/unwatch`.
 
 `/watch` and `/unwatch` commands can be disabled on deployment stage. In such case bot owner should add records to DynamoDB table on his own. Record should contain at least two attributes:
-  - **ChatID**: id of chat in Telegram where statistics will be sent. Bot has to be the member of this chat.
-  - **TeamID**: team numeric id on rating site
+  - `chat_id`: id of chat in Telegram where statistics will be sent. Bot has to be the member of this chat.
+  - `team_id`: team numeric id on rating site
 
 Example:
 ```json
-{ "ChatID": 123456789, "TeamID": 88 }
+{ "chat_id": 123456789, "team_id": 88 }
 ```
 
 **Limitation:** Bot will only track one team results for one chat. If you will run `/watch` several times with different team ids - only the last one will be used.
