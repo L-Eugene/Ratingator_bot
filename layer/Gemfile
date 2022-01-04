@@ -1,5 +1,6 @@
 source "https://rubygems.org"
 
+gem "faraday", "~> 1.8.0"
 gem "telegram-bot-ruby", "~> 0.16.0"
 gem "chgk_rating", "~> 2.1.0"
 gem "dynamoid", "~> 3.7.1"
