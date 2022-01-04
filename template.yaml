@@ -168,6 +168,23 @@ Resources:
         TelegramWebHook:
           Type: Api
           Properties:
+            Auth:
+              ResourcePolicy:
+                CustomStatements:
+                  - Effect: "Allow"
+                    Principal: "*"
+                    Action: "execute-api:Invoke"
+                    Resource: "execute-api:/*/*/*"
+                  - Effect: "Deny"
+                    Principal: "*"
+                    Action: "execute-api:Invoke"
+                    Resource: "execute-api:/*/*/*"
+                    Condition:
+                      NotIpAddress:
+                        "aws:SourceIp":
+                          # CIDR list is taken from https://core.telegram.org/bots/webhooks
+                          - 149.154.160.0/20
+                          - 91.108.4.0/22
             Path: '/hook'
             Method: post
   ProcessCommandLogGroup:
