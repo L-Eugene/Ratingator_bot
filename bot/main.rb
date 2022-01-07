@@ -56,9 +56,9 @@ def only_admin_allowed(message)
 end
 
 def admin?(options)
-  return true if options[:chat_id].to_i > 0
+  return true if options[:chat].private?
   return telegram.api
-                 .get_chat_administrators(chat_id: options[:chat_id])["result"]
+                 .get_chat_administrators(chat_id: options[:chat].id)["result"]
                  .any? { |x| x["user"]["id"].to_i == options[:user_id].to_i }
 end
 
@@ -74,7 +74,9 @@ def message_handler(event:, context:)
   case update.message.text
   when %r{^/watch\s[0-9]+}
     return self_registration_disabled(update.message) if ENV['ALLOW_SELF_REGISTRATION'] == 'false'
-    return only_admin_allowed(update.message) unless admin?(user_id: update.message.from.id, chat_id: update.message.chat.id)
+
+    chat = Chat.find(id: update.message.chat.id) || Chat.new(id: update.message.chat.id)
+    return only_admin_allowed(update.message) unless admin?(userid: update.message.from.id, chat: chat)
 
     team_id = update.message.text.match(%r{/watch\s([0-9]+)})[1].to_i
 
@@ -85,16 +87,18 @@ def message_handler(event:, context:)
       return SUCCESS_RESULT
     end
 
-    if chat_watch(update.message.chat.id, team_id)
+    if chat.update(team_id: team_id)
       telegram.api.send_message(chat_id: update.message.chat.id, text: "Слежение за командой #{team.name} (##{team_id}) включено.")
-    else
+    else 
       telegram.api.send_message(chat_id: update.message.chat.id, text: "Не удалось включить слежение за командой.")
     end
   when %r{^/unwatch}
     return self_registration_disabled(update.message) if ENV['ALLOW_SELF_REGISTRATION'] == 'false'
-    return only_admin_allowed(update.message) unless admin?(user_id: update.message.from.id, chat_id: update.message.chat.id)
 
-    if chat_unwatch(update.message.chat.id)
+    chat = Chat.find(id: update.message.chat.id) || Chat.new(id: update.message.chat.id)
+    return only_admin_allowed(update.message) unless admin?(user_id: update.message.from.id, chat: chat)
+
+    if chat.update(team_id: nil)
       telegram.api.send_message(chat_id: update.message.chat.id, text: "Слежение за командой прекращено.")
     else
       telegram.api.send_message(chat_id: update.message.chat.id, text: "Не удалось отключить слежение за командой.")
