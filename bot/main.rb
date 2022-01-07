@@ -45,6 +45,23 @@ def self_registration_disabled(message)
   SUCCESS_RESULT
 end
 
+def only_admin_allowed(message)
+  telegram.api.send_message(
+    chat_id: message.chat.id,
+    reply_to_message_id: message.message_id,
+    text: 'Только администратор чата может управлять слежением.'
+  )
+
+  SUCCESS_RESULT
+end
+
+def admin?(options)
+  return true if options[:chat_id].to_i > 0
+  return telegram.api
+                 .get_chat_administrators(chat_id: options[:chat_id])["result"]
+                 .any? { |x| x["user"]["id"].to_i == options[:user_id].to_i }
+end
+
 def message_handler(event:, context:)
   begin
     update = Telegram::Bot::Types::Update.new(JSON.parse event['body'])
@@ -57,6 +74,7 @@ def message_handler(event:, context:)
   case update.message.text
   when %r{^/watch\s[0-9]+}
     return self_registration_disabled(update.message) if ENV['ALLOW_SELF_REGISTRATION'] == 'false'
+    return only_admin_allowed(update.message) unless admin?(user_id: update.message.from.id, chat_id: update.message.chat.id)
 
     team_id = update.message.text.match(%r{/watch\s([0-9]+)})[1].to_i
 
@@ -74,6 +92,7 @@ def message_handler(event:, context:)
     end
   when %r{^/unwatch}
     return self_registration_disabled(update.message) if ENV['ALLOW_SELF_REGISTRATION'] == 'false'
+    return only_admin_allowed(update.message) unless admin?(user_id: update.message.from.id, chat_id: update.message.chat.id)
 
     if chat_unwatch(update.message.chat.id)
       telegram.api.send_message(chat_id: update.message.chat.id, text: "Слежение за командой прекращено.")
