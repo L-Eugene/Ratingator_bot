@@ -35,6 +35,16 @@ def randomize(message)
   TXT
 end
 
+def action_disabled(message, feature = '')
+  telegram.api.send_message(
+    chat_id: message.chat.id,
+    reply_to_message_id: message.message_id,
+    text: "Функция #{feature} запрещена. Свяжитесь с владельцем бота."
+  )
+
+  SUCCESS_RESULT
+end
+
 def self_registration_disabled(message)
   telegram.api.send_message(
     chat_id: message.chat.id,
@@ -75,7 +85,7 @@ def message_handler(event:, context:)
   when %r{^/watch\s[0-9]+}
     return self_registration_disabled(update.message) if ENV['ALLOW_SELF_REGISTRATION'] == 'false'
 
-    chat = Chat.find(id: update.message.chat.id) || Chat.new(id: update.message.chat.id)
+    chat = Chat.find_or_create(id: update.message.chat.id)
     return only_admin_allowed(update.message) unless admin?(userid: update.message.from.id, chat: chat)
 
     team_id = update.message.text.match(%r{/watch\s([0-9]+)})[1].to_i
@@ -92,10 +102,17 @@ def message_handler(event:, context:)
     else 
       telegram.api.send_message(chat_id: update.message.chat.id, text: "Не удалось включить слежение за командой.")
     end
+  when %r{^/znatoki_(on|off)}
+    return action_disabled(update.message) unless ENV['ALLOW_ZNATOKI_POLLS']
+
+    chat = Chat.find_or_create(id: update.message.chat.id)
+    return only_admin_allowed(update.message) unless admin?(user_id: update.message.from.id, chat: chat)
+
+    chat.update(znatoki: %r{^/znatoki_on} === update.message.text)
   when %r{^/unwatch}
     return self_registration_disabled(update.message) if ENV['ALLOW_SELF_REGISTRATION'] == 'false'
 
-    chat = Chat.find(id: update.message.chat.id) || Chat.new(id: update.message.chat.id)
+    chat = Chat.find_or_create(id: update.message.chat.id)
     return only_admin_allowed(update.message) unless admin?(user_id: update.message.from.id, chat: chat)
 
     if chat.update(team_id: nil)

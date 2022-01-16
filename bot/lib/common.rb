@@ -17,6 +17,12 @@ class Chat
 
   integer_attr :id, hash_key: true, database_attribute_name: 'chat_id'
   integer_attr :team_id
+  boolean_attr :znatoki
+  integer_attr :znatoki_poll
+
+  def self.find_or_create(options)
+    find(options) || new(options)
+  end
 
   def private?
     id > 0

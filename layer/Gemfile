@@ -1,9 +1,11 @@
 source "https://rubygems.org"
 
-gem "faraday", "~> 1.8.0"
-gem "telegram-bot-ruby", "~> 0.16.0"
-gem "chgk_rating", "~> 2.1.0"
+gem 'faraday', '~> 1.8.0'
+gem 'telegram-bot-ruby', '~> 0.16.0'
+gem 'chgk_rating', '~> 2.1.0'
 gem 'aws-record', '~> 2.0'
+gem 'rss', '~> 0.2.9'
+
 #gem "scorpio", "~> 0.5.0"
 
 ruby '~> 2.7.0'
