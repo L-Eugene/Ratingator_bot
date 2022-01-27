@@ -12,13 +12,13 @@ end
 
 def randomize(message)
   mask = message.text.include?("\n") ? "\n" : ' '
-  
+
   list = message.text
                 .gsub(%r{^\/[^\s]+\s}, '')
                 .split(mask)
                 .compact
                 .map { |x| x.gsub(%r{[,\s]*$}, '') }
-  
+
   if list.size < 2
     telegram.api.send_message(
       text: 'Слишком короткий список вариантов. Введите варианты, разделенные пробелом или переводом строки, в ответе на это сообщение.',
@@ -28,11 +28,30 @@ def randomize(message)
     )
     return
   end
-  
+
   telegram.api.send_message(chat_id: message.chat.id, text: <<~TXT, parse_mode: 'Markdown')
     *Из следущих вариантов:* #{list.join(', ')}
     *Я выбрал* #{list.sample}
   TXT
+end
+
+def extra_poll_options(chat, message)
+  list = message.text.split("\n").map(&:strip).reject { |option| option =~ %r{^/} }
+  chat.update(extra_poll_options: list)
+
+  text = <<~TXT
+    Ко всем опросам от бота будут добавляться следующие варианты:
+    #{list.map { |s| " - #{s}" }.join("\n")}
+  TXT
+
+  if list.empty?
+    text = <<~TXT
+      *Дополнительные варианты удалены.*
+      Если вы хотите их добавить - используйте команду /extra_poll_options со списком (отделяйте варианты переводом строки) или пришлите список в ответ на это сообщение.'
+    TXT
+  end
+
+  telegram.api.send_message chat_id: chat.id, reply_to_message: message.message_id, parse_mode: 'Markdown', text: text
 end
 
 def action_disabled(message, feature = '')
@@ -59,7 +78,7 @@ def only_admin_allowed(message)
   telegram.api.send_message(
     chat_id: message.chat.id,
     reply_to_message_id: message.message_id,
-    text: 'Только администратор чата может управлять слежением.'
+    text: 'Только администратор чата может выполнять эту команду.'
   )
 
   SUCCESS_RESULT
@@ -78,14 +97,14 @@ def message_handler(event:, context:)
   rescue
     puts "Invalid update structure", event['body']
   end
-  
+
   return SUCCESS_RESULT if update&.message.nil?
+
+  chat = Chat.find_or_create(id: update.message.chat.id)
 
   case update.message.text
   when %r{^/watch\s[0-9]+}
     return self_registration_disabled(update.message) if ENV['ALLOW_SELF_REGISTRATION'] == 'false'
-
-    chat = Chat.find_or_create(id: update.message.chat.id)
     return only_admin_allowed(update.message) unless admin?(userid: update.message.from.id, chat: chat)
 
     team_id = update.message.text.match(%r{/watch\s([0-9]+)})[1].to_i
@@ -99,20 +118,16 @@ def message_handler(event:, context:)
 
     if chat.update(team_id: team_id)
       telegram.api.send_message(chat_id: update.message.chat.id, text: "Слежение за командой #{team.name} (##{team_id}) включено.")
-    else 
+    else
       telegram.api.send_message(chat_id: update.message.chat.id, text: "Не удалось включить слежение за командой.")
     end
   when %r{^/znatoki_(on|off)}
     return action_disabled(update.message) unless ENV['ALLOW_ZNATOKI_POLLS']
-
-    chat = Chat.find_or_create(id: update.message.chat.id)
     return only_admin_allowed(update.message) unless admin?(user_id: update.message.from.id, chat: chat)
 
     chat.update(znatoki: %r{^/znatoki_on} === update.message.text)
   when %r{^/unwatch}
     return self_registration_disabled(update.message) if ENV['ALLOW_SELF_REGISTRATION'] == 'false'
-
-    chat = Chat.find_or_create(id: update.message.chat.id)
     return only_admin_allowed(update.message) unless admin?(user_id: update.message.from.id, chat: chat)
 
     if chat.update(team_id: nil)
@@ -120,10 +135,18 @@ def message_handler(event:, context:)
     else
       telegram.api.send_message(chat_id: update.message.chat.id, text: "Не удалось отключить слежение за командой.")
     end
+  when %r{^/extra_poll_options}
+    return only_admin_allowed(update.message) unless admin?(user_id: update.message.from.id, chat: chat)
+
+    extra_poll_options(chat, update.message)
   when %r{^/random}
     randomize(update.message)
   else
     randomize(update.message) if update.message&.reply_to_message&.text =~ %r{^Слишком короткий список вариантов}
+
+    if update.message&.reply_to_message&.text =~ %r{Дополнительные варианты удалены} && admin?(user_id: update.message.from.id, chat: chat)
+      extra_poll_options(chat, update.message)
+    end
   end
 
   SUCCESS_RESULT

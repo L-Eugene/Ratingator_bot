@@ -8,7 +8,7 @@ require 'telegram/bot'
 ANNOUNCE_REGEXP = %r{((?<date>\d+\.[IVX]+).*?)?tournament/(?<id>\d+).*?(?<time>\d{2}:\d{2})(?<online>.*zoom\.us)?}imx
 
 ROMAN_MONTHS = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII']
-RUSSIAN_DAYS = { 
+RUSSIAN_DAYS = {
   'Mon' => 'Пнд',
   'Tue' => 'Вт',
   'Wed' => 'Ср',
@@ -75,7 +75,7 @@ def create_polls
     response = telegram.api.send_poll(
       chat_id: chat.id,
       question: 'В эти выходные я хочу сыграть',
-      options: options.append('Не смогу сыграть'),
+      options: options.append('Не смогу сыграть').concat(chat.extra_poll_options),
       is_anonymous: false,
       allows_multiple_answers: true
     )
