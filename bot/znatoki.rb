@@ -74,7 +74,7 @@ def create_polls
   chats.each do |chat|
     response = telegram.api.send_poll(
       chat_id: chat.id,
-      question: 'В эти выходные я хочу сыграть',
+      question: 'В эти выходные я приду играть',
       options: options.append('Не смогу сыграть').concat(chat.extra_poll_options),
       is_anonymous: false,
       allows_multiple_answers: true
