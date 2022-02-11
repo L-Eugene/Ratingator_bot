@@ -123,7 +123,7 @@ Resources:
         WeeklyScheduleEvent:
           Type: Schedule
           Properties:
-            Schedule: cron(0 8 ? * THU *)
+            Schedule: cron(0 6 ? * THU *)
             Input: '{ "action": "create" }'
         WeeklyCleanupEvent:
           Type: Schedule
@@ -156,7 +156,7 @@ Resources:
         WeeklyScheduleEvent:
           Type: Schedule
           Properties:
-            Schedule: cron(59 15 ? * THU *)
+            Schedule: cron(59 15 ? * FRI *)
   TriggerStatsLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
