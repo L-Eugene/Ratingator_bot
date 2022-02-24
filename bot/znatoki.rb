@@ -5,7 +5,7 @@ require 'open-uri'
 require 'chgk_rating'
 require 'telegram/bot'
 
-ANNOUNCE_REGEXP = %r{((?<date>\d+\.[IVX]+).*?)?tournament/(?<id>\d+).*?(?<time>\d{2}:\d{2})(?<online>.*zoom\.us)?}imx
+ANNOUNCE_REGEXP = %r{((?<date>\d+\.[IVX]+).*?)?tournament/(?<id>\d+).*?(?<time>\d{2}:\d{2})(?<online>.*?zoom\.us)?}imx
 
 ROMAN_MONTHS = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII']
 RUSSIAN_DAYS = {
@@ -60,7 +60,7 @@ def create_polls
 
       next nil if date < Time.new.to_datetime
 
-      "#{localize_day_of_week date.strftime('%a')} #{date.strftime('%F %R')} #{record.type_name} \"#{record.long_name}\""
+      "#{localize_day_of_week date.strftime('%a')} #{date.strftime('%F %R')} #{record.type_name} \"#{record.long_name}\" #{'🎧' if tournament[:online]}"
     end
   end.compact
 
