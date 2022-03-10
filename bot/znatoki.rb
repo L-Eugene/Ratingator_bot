@@ -60,7 +60,7 @@ def create_polls
 
       next nil if date < Time.new.to_datetime
 
-      "#{localize_day_of_week date.strftime('%a')} #{date.strftime('%F %R')} #{record.type_name} \"#{record.long_name}\" #{'🎧' if tournament[:online]}"
+      "#{localize_day_of_week date.strftime('%a')} #{date.strftime('%F %R')} #{record.type_name} \"#{record.name}\" #{'🎧' if tournament[:online]}"
     end
   end.compact
 
