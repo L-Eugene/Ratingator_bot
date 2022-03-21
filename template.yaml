@@ -167,7 +167,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: stats.weekly
-      Timeout: 200
+      Timeout: 400
       Layers:
         - !Ref BotLayer
       Policies:
