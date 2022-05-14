@@ -119,6 +119,7 @@ def initiate(event:, context:)
   end.each do |team, chats|
     sqs = Aws::SQS::Client.new(region: ENV['AWS_REGION'])
     sqs.send_message(queue_url: ENV['SQS_QUEUE_URL'], message_body: { TeamID: team, ChatList: chats }.to_json)
+    puts "Sent message: TeamID=#{team}, ChatList: #{chats.join ', '}"
   rescue StandardError => e
     puts "Error sending message: #{e.message}"
   end

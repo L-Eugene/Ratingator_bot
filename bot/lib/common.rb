@@ -26,10 +26,10 @@ class Chat
   end
 
   def private?
-    id > 0
+    id.positive?
   end
 
   def group?
-    id < 0
+    id.negative?
   end
 end
