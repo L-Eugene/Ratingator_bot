@@ -95,7 +95,7 @@ Resources:
   StatsSqsQueue:
     Type: AWS::SQS::Queue
     Properties:
-      VisibilityTimeout: 250
+      VisibilityTimeout: 450
 
   # Using Makefile here because of bug https://github.com/aws/aws-lambda-builders/issues/177
   BotLayer:
