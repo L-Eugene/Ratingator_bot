@@ -43,10 +43,13 @@ def weekly(event:, context:)
 
   team = ChgkRating.client.team(input['TeamID'])
 
+  # Calculate latest release id
+  rating_id = 1.step {|i| break i if team.ratings[-i].date < DateTime.now } * -1
+
   # Team rating changes
   ratings = {
-    prev: team.ratings[-2],
-    last: team.ratings[-1]
+    prev: team.ratings[rating_id - 1],
+    last: team.ratings[rating_id]
   }
 
   delta = {
@@ -71,20 +74,21 @@ def weekly(event:, context:)
   # Tournaments influenced last rating 
   tournaments = team.tournaments(season_id: 'last').select do |tournament|
     tournament.eager_load!
-    tournament.date_end <= ratings[:last].date  && tournament.date_end > team.ratings[-4].date
+    tournament.date_end <= ratings[:last].date  && tournament.date_end > team.ratings[rating_id - 3].date
   end.map do |tournament|
     result = tournament.team_list.select { |item| item.team.id == team.id }.first
+
+    # Skip tournaments without colculated results
+    next if result.position.to_s == ''
 
     [
       result.included_in_rating ? "#{result.diff_bonus} _(#{result.bonus_b})_" : 'unrated',
       "*[#{type_char(tournament.type_name)}]*",
       "[#{tournament.name}](https://rating.chgk.info/tournament/#{tournament.id})",
-      "*место* #{result.position} #{ "(#{result.predicted_position})" if result.included_in_rating }",
-      "*взято* #{result.questions_total}/#{tournament.questions_total}"
+      "*место* #{result.position || '?'} #{ "(#{result.predicted_position || '?'})" if result.included_in_rating }",
+      "*взято* #{result.questions_total || '?'}/#{tournament.questions_total}"
     ].join(' ')
-  end
-
-
+  end.compact
 
   Telegram::Bot::Client.run(telegram_token) do |bot|
     message = <<~MESSAGE
