@@ -156,7 +156,7 @@ Resources:
         WeeklyScheduleEvent:
           Type: Schedule
           Properties:
-            Schedule: cron(59 15 ? * FRI *)
+            Schedule: cron(59 15 ? * MON *)
   TriggerStatsLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
