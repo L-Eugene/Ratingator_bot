@@ -25,6 +25,11 @@ def medal(number)
   "#{char} #{number}"
 end
 
+# Surround string with brackets if condition is true
+def surround(string, condition)
+  condition ? "[#{string}]" : string
+end
+
 def type_char(tournament_type)
   case tournament_type
   when 'Асинхрон'
@@ -82,10 +87,10 @@ def weekly(event:, context:)
     next if result.position.to_s == ''
 
     [
-      result.included_in_rating ? "#{result.diff_bonus} _(#{result.bonus_b})_" : 'unrated',
+      "#{surround(result.diff_bonus || 0, !tournament.tournament_in_rating)} _(#{result.bonus_b})_",
       "*[#{type_char(tournament.type_name)}]*",
       "[#{tournament.name}](https://rating.chgk.info/tournament/#{tournament.id})",
-      "*место* #{result.position || '?'} #{ "(#{result.predicted_position || '?'})" if result.included_in_rating }",
+      "*место* #{result.position || '?'} #{ "(#{result.predicted_position})" if result.predicted_position }",
       "*взято* #{result.questions_total || '?'}/#{tournament.questions_total}"
     ].join(' ')
   end.compact
