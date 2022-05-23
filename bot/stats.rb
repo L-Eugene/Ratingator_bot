@@ -27,7 +27,7 @@ end
 
 # Surround string with brackets if condition is true
 def surround(string, condition)
-  condition ? "[#{string}]" : string
+  condition ? "\\[#{string}]" : string
 end
 
 def type_char(tournament_type)
@@ -87,7 +87,7 @@ def weekly(event:, context:)
     next if result.position.to_s == ''
 
     [
-      "#{surround(result.diff_bonus || 0, (tournament.tournament_in_rating || 0).zero?} _(#{result.bonus_b})_",
+      "#{surround(result.diff_bonus || 0, !tournament.tournament_in_rating)} _(#{result.bonus_b})_",
       "*[#{type_char(tournament.type_name)}]*",
       "[#{tournament.name}](https://rating.chgk.info/tournament/#{tournament.id})",
       "*место* #{result.position || '?'} #{ "(#{result.predicted_position})" if result.predicted_position }",
