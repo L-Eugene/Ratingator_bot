@@ -1,0 +1,27 @@
+[
+    {
+        "idtournament": "8033",
+        "name": "Легкий Смоленск-16 (синхрон)",
+        "town": null,
+        "long_name": "Международный синхронный турнир \"Легкий Смолеснк-16\"",
+        "date_start": "2022-06-11 14:00:00",
+        "date_end": "2022-06-18 14:00:00",
+        "tour_count": "3",
+        "tour_questions": "13",
+        "tour_ques_per_tour": null,
+        "questions_total": "39",
+        "type_name": "Синхрон",
+        "main_payment_value": "4",
+        "main_payment_currency": "$",
+        "discounted_payment_value": "0",
+        "discounted_payment_currency": "",
+        "discounted_payment_reason": "школьная команда",
+        "tournament_in_rating": "1",
+        "date_requests_allowed_to": "2022-06-17 23:55:00",
+        "comment": null,
+        "site_url": "",
+        "archive": "0",
+        "date_archived_at": null,
+        "db_tags": []
+    }
+]

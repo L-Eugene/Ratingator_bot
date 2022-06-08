@@ -1,0 +1,27 @@
+[
+    {
+        "idtournament": "8088",
+        "name": "Кубок Гармонии – 8. Поход за метками. Яблоко (синхрон)",
+        "town": null,
+        "long_name": "Кубок Гармонии – 8. Поход за метками. Яблоко (синхрон)",
+        "date_start": "2022-06-11 12:00:00",
+        "date_end": "2022-06-18 12:00:00",
+        "tour_count": "3",
+        "tour_questions": "12",
+        "tour_ques_per_tour": null,
+        "questions_total": "36",
+        "type_name": "Синхрон",
+        "main_payment_value": "600",
+        "main_payment_currency": "руб",
+        "discounted_payment_value": null,
+        "discounted_payment_currency": "",
+        "discounted_payment_reason": "",
+        "tournament_in_rating": "1",
+        "date_requests_allowed_to": "2022-06-18 23:55:00",
+        "comment": null,
+        "site_url": "https://alievruslan1917.livejournal.com",
+        "archive": "0",
+        "date_archived_at": null,
+        "db_tags": []
+    }
+]

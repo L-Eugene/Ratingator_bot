@@ -1,0 +1,17 @@
+- :file: index.rss.1.xml
+  :description: three valid options
+  :date: 2022-06-08
+  :tournaments:
+    - 7471
+    - 8033
+    - 8088
+  :testcases:
+    - :description: should find all options in valid dataset
+      :expectations: expect(data.size).to be 3
+    - :description: should mark online tournament with symbol
+      :expectations: |
+        expect(data.first).to include '🎧'
+        data[1..-1].each { |line| expect(line).not_to include '🎧' }
+    - :description: should not have any options from outdated dataset
+      :expectations: expect(data).to be_empty
+      :date: 2022-08-08

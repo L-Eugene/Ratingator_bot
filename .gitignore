@@ -356,3 +356,5 @@ chat_list.json
 telegram_token.txt
 
 # End of https://www.toptal.com/developers/gitignore/api/osx,linux,python,windows,pycharm,visualstudiocode,sam
+.ruby-version
+.ruby-gemset

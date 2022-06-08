@@ -1,0 +1,27 @@
+[
+    {
+        "idtournament": "7471",
+        "name": "Асинхронный студенческий Кубок Беларуси",
+        "town": null,
+        "long_name": "Асинхронный студенческий Кубок Республики Беларусь — 2022",
+        "date_start": "2022-05-26 23:55:00",
+        "date_end": "2022-06-12 23:55:00",
+        "tour_count": "3",
+        "tour_questions": "12",
+        "tour_ques_per_tour": null,
+        "questions_total": "36",
+        "type_name": "Асинхрон",
+        "main_payment_value": "8",
+        "main_payment_currency": "$",
+        "discounted_payment_value": "4",
+        "discounted_payment_currency": "$",
+        "discounted_payment_reason": "Студенческие команды. Школьные команды и вовсе играют бесплатно.",
+        "tournament_in_rating": "0",
+        "date_requests_allowed_to": "2022-06-11 23:55:00",
+        "comment": null,
+        "site_url": "",
+        "archive": "0",
+        "date_archived_at": null,
+        "db_tags": []
+    }
+]
