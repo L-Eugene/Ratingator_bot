@@ -38,12 +38,8 @@ def cleanup_polls
   SUCCESS_RESULT
 end
 
-def create_polls
-  chats = Chat.scan.select(&:znatoki)
-
-  return SUCCESS_RESULT if chats.empty?
-
-  options = URI.open('https://znatoki.info/forums/-/index.rss') do |rss|
+def get_poll_options
+  URI.open('https://znatoki.info/forums/-/index.rss') do |rss|
     feed = RSS::Parser.parse(rss)
     tournaments = feed.items.first.content_encoded.to_enum(:scan, ANNOUNCE_REGEXP).map { Regexp.last_match }
 
@@ -63,6 +59,14 @@ def create_polls
       "#{localize_day_of_week date.strftime('%a')} #{date.strftime('%F %R')} #{record.type_name} \"#{record.name}\" #{'🎧' if tournament[:online]}"
     end
   end.compact
+end
+
+def create_polls
+  chats = Chat.scan.select(&:znatoki)
+
+  return SUCCESS_RESULT if chats.empty?
+
+  options = get_poll_options
 
   if options.empty?
     puts "No future games found. All items in past."
