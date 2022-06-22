@@ -54,6 +54,45 @@ def extra_poll_options(chat, message)
   telegram.api.send_message chat_id: chat.id, reply_to_message: message.message_id, parse_mode: 'Markdown', text: text
 end
 
+def process_venues(chat, message)
+  list = message.text.split("\n").map(&:strip).reject { |option| option =~ %r{^/} }.map(&:to_i)
+
+  chat.update(venues: (chat.venues + list).uniq)
+
+  text = <<~TXT
+    *К списку наблюдения добавлены площадки:*
+    #{ list.join("\n") }
+  TXT
+
+  if list.empty?
+    watched = chat.venues.map(&:to_i).map { |v| "#{v}. *удалить:* /venue\\_unwatch\\_#{v}" }.join("\n")
+
+    text = <<~TXT
+      *На текущий момент вы следите за следующими площадками:*
+      #{chat.venues.empty? ? 'Список пуст' : watched }
+
+      Если вы хотите добавить площадку для слежения - используйте команду /venues со списком id площадок (отделяйте варианты переводом строки) или пришлите список в ответ на это сообщение.
+      Чтобы прекратить следить за площадкой - используйте команду из списка выше.
+    TXT
+  end
+
+  telegram.api.send_message chat_id: chat.id, reply_to_message: message.message_id, parse_mode: 'Markdown', text: text
+end
+
+def unwatch_venue(chat, message)
+  m = message.text.match(%r{/venue_unwatch_(?<venue_id>\d+)})
+
+  text = "Не удалось найти площадку с таким id"
+
+  if m && chat.venues.include?(m[:venue_id].to_i)
+    chat.update(venues: chat.venues - [m[:venue_id].to_i])
+
+    text = "Площадка #{m[:venue_id]} успешно удалена"
+  end
+
+  telegram.api.send_message chat_id: chat.id, reply_to_message: message.message_id, parse_mode: 'Markdown', text: text
+end
+
 def action_disabled(message, feature = '')
   telegram.api.send_message(
     chat_id: message.chat.id,
@@ -126,6 +165,14 @@ def message_handler(event:, context:)
     return only_admin_allowed(update.message) unless admin?(user_id: update.message.from.id, chat: chat)
 
     chat.update(znatoki: %r{^/znatoki_on} === update.message.text)
+  when %r{^/venues}
+    return only_admin_allowed(update.message) unless admin?(user_id: update.message.from.id, chat: chat)
+
+    process_venues(chat, update.message)
+  when %r{^/venue_unwatch}
+    return only_admin_allowed(update.message) unless admin?(user_id: update.message.from.id, chat: chat)
+
+    unwatch_venue(chat, update.message)
   when %r{^/unwatch}
     return self_registration_disabled(update.message) if ENV['ALLOW_SELF_REGISTRATION'] == 'false'
     return only_admin_allowed(update.message) unless admin?(user_id: update.message.from.id, chat: chat)
@@ -146,6 +193,10 @@ def message_handler(event:, context:)
 
     if update.message&.reply_to_message&.text =~ %r{Дополнительные варианты удалены} && admin?(user_id: update.message.from.id, chat: chat)
       extra_poll_options(chat, update.message)
+    end
+
+    if update.message&.reply_to_message&.text =~ %r{вы следите за следующими площадками} && admin?(user_id: update.message.from.id, chat: chat)
+      process_venues(chat, update.message)
     end
   end
 
