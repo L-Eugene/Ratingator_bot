@@ -137,6 +137,32 @@ Resources:
       LogGroupName: !Sub "/aws/lambda/${WatchZnatokiFunction}"
       RetentionInDays: 14
 
+  WatchVenuesFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: venues.handler
+      Timeout: 400
+      Layers:
+        - !Ref BotLayer
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ChatDBTable
+        - !If
+          - KeepTokenSecretCond
+          - AWSSecretsManagerGetSecretValuePolicy:
+              SecretArn: !Ref SecretStorage
+          - !Ref AWS::NoValue
+      Events:
+        DailyCheckEvent:
+          Type: Schedule
+          Properties:
+            Schedule: cron(15 6 ? * * *)
+  WatchVenuesLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub "/aws/lambda/${WatchVenuesFunction}"
+      RetentionInDays: 14
+
   TriggerStatsFunction:
     Type: AWS::Serverless::Function
     Properties:

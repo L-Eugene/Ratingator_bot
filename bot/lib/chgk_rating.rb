@@ -1,6 +1,6 @@
 require 'scorpio'
 
-class ChgkRating
+class ChgkRating2
   def initialize
     @rating_doc = Scorpio::OpenAPI::Document.from_instance(JSON.parse(Faraday.get('http://api.rating.chgk.net/docs.json').body))
     @rating_doc.base_url = 'http://api.rating.chgk.net/'

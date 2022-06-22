@@ -19,6 +19,7 @@ class Chat
   integer_attr :team_id
   boolean_attr :znatoki
   integer_attr :znatoki_poll
+  list_attr :venues, default_value: []
   list_attr :extra_poll_options, default_value: []
 
   def self.find_or_create(options)
