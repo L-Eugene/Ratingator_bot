@@ -30,7 +30,7 @@ class VenueWatch
   end
 
   def events
-    @data.map do |event|
+    @data.sort_by(&:dateStart).map do |event|
       {
         tournament: tournament(event.tournamentId),
         venue: event.venue,
@@ -55,7 +55,7 @@ def handler(event:, context:)
     chat.venues.each do |venue_id|
       games = VenueWatch[venue_id]
 
-      items = games.events.sort_by { |e| e[:beginning] }.map do |game|
+      items = games.events.map do |game|
         <<~TEXT
           <a href="https://rating.chgk.info/tournament/#{game[:tournament].id}">#{game[:tournament].name}</a>
           <b>Начало</b> в #{game[:beginning].strftime('%F %R')}
