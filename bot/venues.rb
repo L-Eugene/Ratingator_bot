@@ -22,8 +22,8 @@ class VenueWatch
       page: 1,
       itemsPerPage: 50,
       pagination: true,
-      'dateStart[strictly_before]': Date.today + 1,
-      'dateStart[strictly_after]': Date.today
+      'dateStart[strictly_before]': (Date.today + 1).to_s,
+      'dateStart[strictly_after]': Date.today.to_s
     )['hydra:member']
 
     @@cache[venue_id] = self
