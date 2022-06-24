@@ -4,14 +4,16 @@ require_relative 'lib/chgk_rating'
 require 'telegram/bot'
 
 class VenueWatch
-  # Cache for venues data
-  @@cache = {}
-  # Cache for tournament data
-  @@trnmt = {}
-
   def self.[](venue_id)
     return @@cache[venue_id] if @@cache.key? venue_id
     new venue_id
+  end
+
+  def self.reset_cache!
+    # Cache for venues data
+    @@cache = {}
+    # Cache for tournament data
+    @@trnmt = {}
   end
 
   def initialize(venue_id)
@@ -46,6 +48,8 @@ class VenueWatch
   def tournament(tournament_id)
     @@trnmt[tournament_id] ||= @@client.getTournamentItem(id: tournament_id)
   end
+
+  reset_cache!
 end
 
 def handler(event:, context:)
