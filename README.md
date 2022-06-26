@@ -24,6 +24,23 @@ Example:
 
 **Limitation:** Bot will only track one team results for one chat. If you will run `/watch` several times with different team ids - only the last one will be used.
 
+### Znatoki.info
+
+Bot cat get game announces from [znatoki.info](https://znatoki.info) website. In that case it will check the site rss once a week (schedule can be changed on deployment stage)
+and create a poll with the list of announced games so team players can let everyone know what games they are going to attend.
+
+Can be enabled with `/znatoki_on` command and disabled with `/znatoki_off` command.
+
+By default the poll will contain all game definitions from the site and "Can not attend" option. 
+If you want other options to be appended to your polls, you can use `/extra_poll_options` command.
+
+### Venues
+
+Bot can track venues and send brief data about upcoming games. Information is sent once a day for games that are planned for that day.
+To enable the feature use `/venue 1234` command where 1234 is venue numeric id from rating site. There is no limit on the number of venues monitored by one team.
+To disable venue monitoring use `/venue_unwatch_1234` command.
+Running `/venue` command will show the list of venues you are already monitoring and instructions to manage their list.
+
 ### Randomize
 
 You can use `/random` command to cast the lot. Bot will parse command message for items separated by space or new line and will select one of them.
