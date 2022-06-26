@@ -10,6 +10,18 @@ def telegram
   @telegram ||= Telegram::Bot::Client.new(telegram_token)
 end
 
+def help_message
+  <<~TEXT
+    /help - вывести это сообщение
+    /watch <team\\_id> - следить за рейтингом команды (один чат - одна команда)
+    /unwatch - перестать следить за рейтингом команды
+    /znatoki\\_on - следить за анонсами на сайте [Гомельского клуба](http://znatoki.info)
+    /znatoki\\_off - перестать следить за анонсами на сайте [Гомельского клуба](http://znatoki.info)
+    /venues - вывести список наблюдаемых площадок и инструкцию по управлению списком
+    /random - выбрать случайный вариант из заданных
+  TEXT
+end
+
 def randomize(message)
   mask = message.text.include?("\n") ? "\n" : ' '
 
@@ -142,6 +154,8 @@ def message_handler(event:, context:)
   chat = Chat.find_or_create(id: update.message.chat.id)
 
   case update.message.text
+  when %r{^/help|^/start}
+    telegram.api.send_message(chat_id: update.message.chat.id, text: help_message, parse_mode: 'Markdown')
   when %r{^/watch\s[0-9]+}
     return self_registration_disabled(update.message) if ENV['ALLOW_SELF_REGISTRATION'] == 'false'
     return only_admin_allowed(update.message) unless admin?(userid: update.message.from.id, chat: chat)
