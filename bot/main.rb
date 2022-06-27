@@ -142,6 +142,12 @@ def admin?(options)
                  .any? { |x| x["user"]["id"].to_i == options[:user_id].to_i }
 end
 
+def unpin_messages(event:, context:)
+  Chat.scan.each(&:unpin_messages!)
+
+  SUCCESS_RESULT
+end
+
 def message_handler(event:, context:)
   begin
     update = Telegram::Bot::Types::Update.new(JSON.parse event['body'])

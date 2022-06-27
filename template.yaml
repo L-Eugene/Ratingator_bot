@@ -112,7 +112,7 @@ Resources:
     Type: AWS::Serverless::Function
     Condition: GetAnnounceFromZnatoki
     Properties:
-      Handler: znatoki.handler
+      Handler: znatoki.create_polls
       Timeout: 15
       Layers:
         - !Ref BotLayer
@@ -125,11 +125,6 @@ Resources:
           Properties:
             Schedule: cron(0 6 ? * THU *)
             Input: '{ "action": "create" }'
-        WeeklyCleanupEvent:
-          Type: Schedule
-          Properties:
-            Schedule: cron(0 14 ? * SUN *)
-            Input: '{ "action": "cleanup" }'
   WatchZnatokiLogGroup:
     Type: AWS::Logs::LogGroup
     Condition: GetAnnounceFromZnatoki
@@ -215,6 +210,27 @@ Resources:
     Properties:
       LogGroupName: !Sub "/aws/lambda/${SendStatsFunction}"
       RetentionInDays: 14
+
+  CleanupPinnedFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: main.unpin_messages
+      Timeout: 30
+      Layers:
+        - !Ref BotLayer
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ChatDBTable
+        - !If
+          - KeepTokenSecretCond
+          - AWSSecretsManagerGetSecretValuePolicy:
+              SecretArn: !Ref SecretStorage
+          - !Ref AWS::NoValue
+      Events:
+        DailyCleanupEvent:
+          Type: Schedule
+          Properties:
+            Schedule: cron(0 15 ? * * *)
 
   ProcessCommandFunction:
     Type: AWS::Serverless::Function

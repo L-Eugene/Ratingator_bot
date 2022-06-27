@@ -27,17 +27,6 @@ def localize_day_of_week(string)
   RUSSIAN_DAYS.inject(string) { |string, (en, ru)| string.gsub(/^#{en}/, ru) }
 end
 
-def cleanup_polls
-  telegram = Telegram::Bot::Client.new(telegram_token)
-
-  Chat.scan.select(&:znatoki_poll).each do |chat|
-    telegram.api.unpin_chat_message(chat_id: chat.id, message_id: chat.znatoki_poll)
-    chat.update(znatoki_poll: nil)
-  end
-
-  SUCCESS_RESULT
-end
-
 def get_poll_options
   URI.open('https://znatoki.info/forums/-/index.rss') do |rss|
     feed = RSS::Parser.parse(rss)
@@ -54,14 +43,14 @@ def get_poll_options
 
       record = ChgkRating.client.tournament(tournament[:id])
 
-      next nil if date < Time.new.to_datetime
+      next nil if date < Date.today
 
       "#{localize_day_of_week date.strftime('%a')} #{date.strftime('%F %R')} #{record.type_name} \"#{record.name}\" #{'🎧' if tournament[:online]}"
     end
   end.compact
 end
 
-def create_polls
+def create_polls(event:, context:)
   chats = Chat.scan.select(&:znatoki)
 
   return SUCCESS_RESULT if chats.empty?
@@ -84,17 +73,8 @@ def create_polls
       allows_multiple_answers: true
     )
 
-    telegram.api.pin_chat_message(
-      chat_id: chat.id,
-      message_id: response['result']['message_id'],
-    )
-
-    chat.update(znatoki_poll: response['result']['message_id'])
+    chat.pin_message(response['result']['message_id'], next_day('sunday'))
   end
 
   SUCCESS_RESULT
-end
-
-def handler(event:, context:)
-  send("#{event['action']}_polls") if ['create', 'cleanup'].include? event['action']
 end
