@@ -73,11 +73,13 @@ def handler(event:, context:)
 
       venue = games.events.first[:venue]
 
-      telegram.api.send_message(chat_id: chat.id.to_i, text: <<~MESSAGE, parse_mode: 'HTML')
+      response = telegram.api.send_message(chat_id: chat.id.to_i, text: <<~MESSAGE, parse_mode: 'HTML')
         <b>Сегодня на площадке #{venue['name']} состоится:</b>
 
         #{items.join("\n\n")}
       MESSAGE
+
+      chat.pin_message(response['result']['message_id'])
     end
   end
 
