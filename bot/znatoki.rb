@@ -51,7 +51,7 @@ def get_poll_options
 end
 
 def create_polls(event:, context:)
-  chats = Chat.scan.select(&:znatoki)
+  chats = Bot::Chat.scan.select(&:znatoki)
 
   return SUCCESS_RESULT if chats.empty?
 
@@ -73,7 +73,7 @@ def create_polls(event:, context:)
       allows_multiple_answers: true
     )
 
-    chat.pin_message(response['result']['message_id'], next_day('sunday'))
+    chat.pin_message(response['result']['message_id'], Bot::Util.next_day('sunday'))
   end
 
   SUCCESS_RESULT

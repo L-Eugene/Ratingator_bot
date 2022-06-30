@@ -122,7 +122,7 @@ end
 # Object should have TeamID and ChatList to send the result.
 def initiate(event:, context:)
   require 'aws-sdk-sqs'
-  Chat.scan.inject(Hash.new { |h, k| h[k] = [] }) do |hash, chat|
+  Bot::Chat.scan.inject(Hash.new { |h, k| h[k] = [] }) do |hash, chat|
     hash[chat.team_id] << chat.id if chat.team_id 
     hash
   end.each do |team, chats|

@@ -143,7 +143,7 @@ def admin?(options)
 end
 
 def unpin_messages(event:, context:)
-  Chat.scan.each(&:unpin_messages!)
+  Bot::Chat.scan.each(&:unpin_messages!)
 
   SUCCESS_RESULT
 end
@@ -157,7 +157,7 @@ def message_handler(event:, context:)
 
   return SUCCESS_RESULT if update&.message.nil?
 
-  chat = Chat.find_or_create(id: update.message.chat.id)
+  chat = Bot::Chat.find_or_create(id: update.message.chat.id)
 
   case update.message.text
   when %r{^/help|^/start}

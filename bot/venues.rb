@@ -55,7 +55,7 @@ end
 def handler(event:, context:)
   telegram = Telegram::Bot::Client.new(telegram_token)
 
-  Chat.scan.each do |chat|
+  Bot::Chat.scan.each do |chat|
     chat.venues.each do |venue_id|
       games = VenueWatch[venue_id]
 
