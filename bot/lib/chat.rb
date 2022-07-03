@@ -34,11 +34,15 @@ module Bot
     def unpin_messages!
       list = pinned.select { |p| Date.parse(p['deadline']) <= Date.today }
 
-      return if list.empty
+      return if list.empty?
 
       telegram = Telegram::Bot::Client.new(telegram_token)
 
-      list.each { |p| telegram.api.unpin_chat_message(chat_id: id, message_id: p['message_id']) }
+      list.each do |p|
+        telegram.api.unpin_chat_message(chat_id: id, message_id: p['message_id'].to_i)
+      rescue Telegram::Bot::Exceptions::ResponseError => e
+        puts "ERROR: #{e.class}: #{e.message}"
+      end
 
       update(pinned: pinned - list)
     end
