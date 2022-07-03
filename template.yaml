@@ -231,6 +231,11 @@ Resources:
           Type: Schedule
           Properties:
             Schedule: cron(0 15 ? * * *)
+  CleanupPinnedLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub "/aws/lambda/${CleanupPinnedFunction}"
+      RetentionInDays: 14
 
   ProcessCommandFunction:
     Type: AWS::Serverless::Function
