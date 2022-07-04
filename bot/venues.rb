@@ -62,6 +62,7 @@ def handler(event:, context:)
       items = games.events.map do |game|
         <<~TEXT
           <a href="https://rating.chgk.info/tournament/#{game[:tournament].id}">#{game[:tournament].name}</a>
+          #{game[:tournament].questionQty.map { |_,v| v }.sum} вопросов (сложность #{game[:tournament].difficultyForecast}) 
           <b>Начало</b> в #{game[:beginning].strftime('%F %R')}
           <b>Редактор(ы):</b> #{game[:tournament].editors.map{ |e| "#{e.name} #{e.surname}" }.join(', ')}
           <b>Представитель:</b> #{game[:representative].name} #{game[:representative].surname}
