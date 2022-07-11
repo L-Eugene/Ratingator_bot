@@ -78,6 +78,8 @@ def handler(event:, context:)
         <b>Сегодня на площадке #{venue['name']} состоится:</b>
 
         #{items.join("\n\n")}
+
+        #ratingator #announcement
       MESSAGE
 
       chat.pin_message(response['result']['message_id'])
