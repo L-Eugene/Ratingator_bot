@@ -2,6 +2,8 @@ require 'json'
 require 'date'
 require 'aws-record'
 
+SUCCESS_RESULT = { statusCode: 200 }
+
 def telegram_token
   return ENV['TELEGRAM_TOKEN'] if ENV.key? 'TELEGRAM_TOKEN'
   return File.read('../telegram_token.txt').chomp unless ENV.key? 'AWS_REGION'

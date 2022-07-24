@@ -17,7 +17,6 @@ RUSSIAN_DAYS = {
   'Sat' => 'Сб',
   'Sun' => 'Вс'
 }
-SUCCESS_RESULT = { statusCode: 200 }
 
 def roman_to_arabic(number)
   (%r{^[IVX]+$} === number.to_s.upcase ? ROMAN_MONTHS.find_index(number) + 1 : number).to_i
@@ -51,7 +50,7 @@ def get_poll_options
 end
 
 def create_polls(event:, context:)
-  chats = Bot::Chat.scan.select(&:znatoki)
+  chats = context[:chats] || Bot::Chat.scan.select(&:znatoki)
 
   return SUCCESS_RESULT if chats.empty?
 

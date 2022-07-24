@@ -4,8 +4,6 @@ require 'json'
 
 require_relative 'lib/common.rb'
 
-SUCCESS_RESULT = { statusCode: 200 }
-
 def telegram
   @telegram ||= Telegram::Bot::Client.new(telegram_token)
 end
@@ -185,6 +183,12 @@ def message_handler(event:, context:)
     return only_admin_allowed(update.message) unless admin?(user_id: update.message.from.id, chat: chat)
 
     chat.update(znatoki: %r{^/znatoki_on} === update.message.text)
+  when %r{^/znatoki_force}
+    return action_disabled(update.message) unless ENV['ALLOW_ZNATOKI_POLLS']
+    return only_admin_allowed(update.message) unless admin?(user_id: update.message.from.id, chat: chat)
+
+    require_relative './znatoki'
+    create_polls event: nil, context: { chats: [ chat ] }
   when %r{^/venues}
     return only_admin_allowed(update.message) unless admin?(user_id: update.message.from.id, chat: chat)
 
