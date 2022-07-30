@@ -50,7 +50,7 @@ def get_poll_options
 end
 
 def create_polls(event:, context:)
-  chats = context[:chats] || Bot::Chat.scan.select(&:znatoki)
+  chats = (context.is_a?(Hash) && context.key?(:chats)) ? context[:chats] : Bot::Chat.scan.select(&:znatoki)
 
   return SUCCESS_RESULT if chats.empty?
 
