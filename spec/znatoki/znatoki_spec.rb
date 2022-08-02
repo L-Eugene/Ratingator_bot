@@ -3,6 +3,7 @@ require "znatoki"
 YAML.load_file(File.join FIXTURES_PATH, 'znatoki', 'datasets.yml').each do |dataset|
   describe dataset[:description] do
     before :each do
+      VCR.turn_off!
       stub_request(:get, 'https://znatoki.info/forums/-/index.rss')
         .to_return(body: File.read(File.join FIXTURES_PATH, 'znatoki', dataset[:file]))
       dataset[:tournaments].each do |trnmt|
@@ -14,6 +15,7 @@ YAML.load_file(File.join FIXTURES_PATH, 'znatoki', 'datasets.yml').each do |data
 
     after :each do
       Timecop.return
+      VCR.turn_on!
     end
 
     dataset[:testcases].each do |testcase|

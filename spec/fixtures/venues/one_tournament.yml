@@ -1,0 +1,52 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://api.rating.chgk.net/tournaments/8141
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - application/json
+      User-Agent:
+      - rating-chgk-v2 gem/1.1.0
+      Content-type:
+      - application/json
+      Accept-Encoding:
+      - gzip,deflate,br
+      Authorization:
+      - 'Bearer '
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      server:
+      - nginx/1.14.0 (Ubuntu)
+      content-type:
+      - application/json; charset=utf-8
+      transfer-encoding:
+      - chunked
+      connection:
+      - keep-alive
+      vary:
+      - Accept
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - deny
+      cache-control:
+      - no-cache, private
+      date:
+      - Mon, 01 Aug 2022 21:23:06 GMT
+      link:
+      - <https://api.rating.chgk.net/docs.jsonld>; rel="http://www.w3.org/ns/hydra/core#apiDocumentation"
+      etag:
+      - '"9e46e362b40e4f50af77c0a99433a094"'
+    body:
+      encoding: UTF-8
+      string: '{"id":8141,"name":"Лето в Тюмени. Божоле Нуво","lastEditDate":"2022-07-27T22:58:08+03:00","dateStart":"2022-06-24T14:00:00+03:00","dateEnd":"2022-07-01T14:00:00+03:00","type":{"id":3,"name":"Синхрон"},"season":"\/seasons\/56","orgcommittee":[{"id":64137,"name":"Святослав","patronymic":"Борисович","surname":"Косович"},{"id":41623,"name":"Алексей","patronymic":"Евгеньевич","surname":"Скуратов"}],"synchData":{"dateRequestsAllowedTo":"2022-07-01T23:55:00+03:00","resultFixesTo":"2022-07-16T23:55:00+03:00","resultsRecapsTo":"2022-07-10T23:55:00+03:00","allowAppealCancel":true,"allowNarratorErrorAppeal":false,"archive":true,"dateArchivedAt":"2022-07-28T00:00:00+03:00","dateDownloadQuestionsFrom":"2022-06-22T00:00:00+03:00","dateDownloadQuestionsTo":"2022-07-01T14:00:00+03:00","hideQuestionsTo":"2023-01-01T23:55:00+03:00","hideResultsTo":"2022-07-01T23:55:00+03:00","allVerdictsDone":null,"instantControversial":true},"mainPayment":450,"discountedPayment":300,"discountedPaymentReason":"Одинарный,
+        парный, пляжный и студзачёты. Школьный зачет: бесплатно","currency":"r","editors":[{"id":175267,"name":"Дмитрий","patronymic":"Дмитриевич","surname":"Красковский"},{"id":121226,"name":"Павел","patronymic":"Викторович","surname":"Парфианович"},{"id":97261,"name":"Ярослав","patronymic":"Алексеевич","surname":"Полевой"},{"id":136310,"name":"Антон","patronymic":"Анатольевич","surname":"Карпиевич"},{"id":41623,"name":"Алексей","patronymic":"Евгеньевич","surname":"Скуратов"},{"id":64137,"name":"Святослав","patronymic":"Борисович","surname":"Косович"},{"id":21487,"name":"Борис","patronymic":"Яковлевич","surname":"Моносов"},{"id":51715,"name":"Анвар","patronymic":"Саматович","surname":"Мухаметкалиев"},{"id":31493,"name":"Сергей","patronymic":"Александрович","surname":"Терентьев"},{"id":12160,"name":"Михаил","patronymic":"Андреевич","surname":"Иванов"}],"tournamentInRatingBalanced":true,"difficultyForecast":4,"maiiAegis":true,"maiiAegisUpdatedAt":"2022-06-15T00:55:20.911571Z","maiiRating":true,"maiiRatingUpdatedAt":"2022-06-15T00:55:20.911424Z","questionQty":{"1":12,"2":12,"3":12}}'
+  recorded_at: Sun, 26 Jun 2022 09:00:00 GMT
+recorded_with: VCR 6.1.0

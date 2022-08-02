@@ -1,0 +1,100 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://api.rating.chgk.net/venues/4588
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - application/json
+      User-Agent:
+      - rating-chgk-v2 gem/1.1.0
+      Content-type:
+      - application/json
+      Accept-Encoding:
+      - gzip,deflate,br
+      Authorization:
+      - 'Bearer '
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      server:
+      - nginx/1.14.0 (Ubuntu)
+      content-type:
+      - application/json; charset=utf-8
+      transfer-encoding:
+      - chunked
+      connection:
+      - keep-alive
+      vary:
+      - Accept
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - deny
+      cache-control:
+      - no-cache, private
+      date:
+      - Mon, 01 Aug 2022 21:21:49 GMT
+      link:
+      - <https://api.rating.chgk.net/docs.jsonld>; rel="http://www.w3.org/ns/hydra/core#apiDocumentation"
+      etag:
+      - '"9f1ef7c804d877cfd45d876923655654"'
+    body:
+      encoding: UTF-8
+      string: '{"id":4588,"name":"Домашняя площадка Дарьи Маштак","town":{"id":201,"name":"Москва","region":{"id":90,"name":"Москва","country":{"id":21,"name":"Россия"}},"country":{"id":21,"name":"Россия"}},"type":{"id":1,"name":"Постоянная"},"address":null,"urls":[]}'
+  recorded_at: Sun, 26 Jun 2022 09:00:00 GMT
+- request:
+    method: get
+    uri: https://api.rating.chgk.net/venues/4588/requests?dateStart%5Bstrictly_after%5D=2022-06-26&dateStart%5Bstrictly_before%5D=2022-06-27
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - application/json
+      User-Agent:
+      - rating-chgk-v2 gem/1.1.0
+      Content-type:
+      - application/json
+      Accept-Encoding:
+      - gzip,deflate,br
+      Authorization:
+      - 'Bearer '
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      server:
+      - nginx/1.14.0 (Ubuntu)
+      content-type:
+      - application/json; charset=utf-8
+      transfer-encoding:
+      - chunked
+      connection:
+      - keep-alive
+      vary:
+      - Accept
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - deny
+      cache-control:
+      - no-cache, private
+      date:
+      - Mon, 01 Aug 2022 21:21:49 GMT
+      link:
+      - <https://api.rating.chgk.net/docs.jsonld>; rel="http://www.w3.org/ns/hydra/core#apiDocumentation"
+      etag:
+      - '"b64989c4a51506d7b9e14beb27af3050"'
+    body:
+      encoding: UTF-8
+      string: '[{"id":106987,"status":"A","venue":{"id":4588,"name":"Домашняя площадка
+        Дарьи Маштак","town":{"id":201,"name":"Москва","region":{"id":90,"name":"Москва","country":{"id":21,"name":"Россия"}},"country":{"id":21,"name":"Россия"}},"type":{"id":1,"name":"Постоянная"},"address":null,"urls":[]},"representative":{"id":182527,"name":"Дарья","patronymic":"Васильевна","surname":"Маштак"},"narrators":[{"id":182527,"name":"Дарья","patronymic":"Васильевна","surname":"Маштак"}],"approximateTeamsCount":1,"issuedAt":"2022-06-23T12:36:39+03:00","dateStart":"2022-06-26T17:00:00+03:00","tournamentId":8141}]'
+  recorded_at: Sun, 26 Jun 2022 09:00:00 GMT
+recorded_with: VCR 6.1.0

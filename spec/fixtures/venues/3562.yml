@@ -1,0 +1,147 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://api.rating.chgk.net/venues/3562/requests?dateStart%5Bstrictly_after%5D=2022-06-24&dateStart%5Bstrictly_before%5D=2022-06-25
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - application/json
+      User-Agent:
+      - rating-chgk-v2 gem/1.1.0
+      Content-type:
+      - application/json
+      Accept-Encoding:
+      - gzip,deflate,br
+      Authorization:
+      - 'Bearer '
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      server:
+      - nginx/1.14.0 (Ubuntu)
+      content-type:
+      - application/json; charset=utf-8
+      transfer-encoding:
+      - chunked
+      connection:
+      - keep-alive
+      vary:
+      - Accept
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - deny
+      cache-control:
+      - no-cache, private
+      date:
+      - Mon, 01 Aug 2022 21:06:40 GMT
+      link:
+      - <https://api.rating.chgk.net/docs.jsonld>; rel="http://www.w3.org/ns/hydra/core#apiDocumentation"
+      etag:
+      - '"d751713988987e9331980363e24189ce"'
+    body:
+      encoding: UTF-8
+      string: "[]"
+  recorded_at: Fri, 24 Jun 2022 09:00:00 GMT
+- request:
+    method: get
+    uri: https://api.rating.chgk.net/venues/3562
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - application/json
+      User-Agent:
+      - rating-chgk-v2 gem/1.1.0
+      Content-type:
+      - application/json
+      Accept-Encoding:
+      - gzip,deflate,br
+      Authorization:
+      - 'Bearer '
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      server:
+      - nginx/1.14.0 (Ubuntu)
+      content-type:
+      - application/json; charset=utf-8
+      transfer-encoding:
+      - chunked
+      connection:
+      - keep-alive
+      vary:
+      - Accept
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - deny
+      cache-control:
+      - no-cache, private
+      date:
+      - Mon, 01 Aug 2022 21:27:14 GMT
+      link:
+      - <https://api.rating.chgk.net/docs.jsonld>; rel="http://www.w3.org/ns/hydra/core#apiDocumentation"
+      etag:
+      - '"1048c153ee90ad621bde117ed512a500"'
+    body:
+      encoding: UTF-8
+      string: '{"id":3562,"name":"Bern UniBe","town":{"id":1982,"name":"Берн","region":null,"country":{"id":48,"name":"Швейцария"}},"type":{"id":1,"name":"Постоянная"},"address":null,"urls":["https:\/\/www.facebook.com\/groups\/chgk.bern\/"]}'
+  recorded_at: Sun, 26 Jun 2022 09:00:00 GMT
+- request:
+    method: get
+    uri: https://api.rating.chgk.net/venues/3562/requests?dateStart%5Bstrictly_after%5D=2022-06-26&dateStart%5Bstrictly_before%5D=2022-06-27
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - application/json
+      User-Agent:
+      - rating-chgk-v2 gem/1.1.0
+      Content-type:
+      - application/json
+      Accept-Encoding:
+      - gzip,deflate,br
+      Authorization:
+      - 'Bearer '
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      server:
+      - nginx/1.14.0 (Ubuntu)
+      content-type:
+      - application/json; charset=utf-8
+      transfer-encoding:
+      - chunked
+      connection:
+      - keep-alive
+      vary:
+      - Accept
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - deny
+      cache-control:
+      - no-cache, private
+      date:
+      - Mon, 01 Aug 2022 21:27:14 GMT
+      link:
+      - <https://api.rating.chgk.net/docs.jsonld>; rel="http://www.w3.org/ns/hydra/core#apiDocumentation"
+      etag:
+      - '"d751713988987e9331980363e24189ce"'
+    body:
+      encoding: UTF-8
+      string: "[]"
+  recorded_at: Sun, 26 Jun 2022 09:00:00 GMT
+recorded_with: VCR 6.1.0

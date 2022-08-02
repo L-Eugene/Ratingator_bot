@@ -1,5 +1,5 @@
 require_relative 'lib/common'
-require_relative 'lib/chgk_rating'
+require 'rating_chgk_v2'
 
 require 'telegram/bot'
 
@@ -17,16 +17,14 @@ class VenueWatch
   end
 
   def initialize(venue_id)
-    @@client ||= ChgkRating2.new
+    @@client ||= RatingChgkV2.client
 
-    @data = @@client.api_venues_requests_get_subresourceVenueSubresource(
-      id: venue_id,
-      page: 1,
-      itemsPerPage: 50,
-      pagination: true,
+    @venue = @@client.venue venue_id
+
+    @data = @venue.requests(
       'dateStart[strictly_before]': (Date.today + 1).to_s,
       'dateStart[strictly_after]': Date.today.to_s
-    )['hydra:member']
+    )
 
     @@cache[venue_id] = self
   end
@@ -35,7 +33,7 @@ class VenueWatch
     @data.sort_by(&:dateStart).map do |event|
       {
         tournament: tournament(event.tournamentId),
-        venue: event.venue,
+        venue: @venue,
         representative: event.representative,
         narrators: event.narrators,
         beginning: DateTime.parse(event.dateStart)
@@ -46,7 +44,7 @@ class VenueWatch
   private
 
   def tournament(tournament_id)
-    @@trnmt[tournament_id] ||= @@client.getTournamentItem(id: tournament_id)
+    @@trnmt[tournament_id] ||= @@client.tournament tournament_id
   end
 
   reset_cache!
