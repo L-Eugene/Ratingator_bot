@@ -350,6 +350,7 @@ samconfig.toml
 
 # Ruby dev
 Gemfile.lock
+Gemfile.lock.bak
 
 # Debug data
 chat_list.json
@@ -358,3 +359,4 @@ telegram_token.txt
 # End of https://www.toptal.com/developers/gitignore/api/osx,linux,python,windows,pycharm,visualstudiocode,sam
 .ruby-version
 .ruby-gemset
+.bundle
