@@ -86,8 +86,11 @@ def weekly(event:, context:)
     # Skip tournaments without colculated results
     next if result.position.to_s == ''
 
+    # rating only changed if at least 4 players from base took part in tournament
+    is_base = ChgkRating.client.team_players_at_tournament(tournament.id, team.id).count(&:is_base) >= 4
+
     [
-      "#{surround(result.diff_bonus || 0, !tournament.tournament_in_rating)} _(#{result.bonus_b})_",
+      "#{surround(result.diff_bonus || 0, !is_base || !tournament.tournament_in_rating)} _(#{result.bonus_b})_",
       "*[#{type_char(tournament.type_name)}]*",
       "[#{tournament.name}](https://rating.chgk.info/tournament/#{tournament.id})",
       "*место* #{result.position || '?'} #{ "(#{result.predicted_position})" if result.predicted_position }",
