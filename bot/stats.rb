@@ -19,10 +19,7 @@ end
 
 def medal(number)
   values = ['🔸', '🥇', '🥈', '🥉']
-  char = values.first
-  char = values[number.to_i] if values.size > number.to_i
-
-  "#{char} #{number}"
+  "#{values.size > number.to_i ? values[number.to_i] : values.first} #{number}"
 end
 
 # Surround string with brackets if condition is true
