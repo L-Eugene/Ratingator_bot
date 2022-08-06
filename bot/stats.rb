@@ -4,42 +4,6 @@ require 'telegram/bot'
 require 'chgk_rating'
 require 'json'
 
-def arrow(number)
-  char = case number
-         when :zero?.to_proc
-           '➡️'
-         when :positive?.to_proc
-           '⬆️'
-         else
-           '⬇️'
-         end
-
-  "#{char} #{number.abs}"
-end
-
-def medal(number)
-  values = ['🔸', '🥇', '🥈', '🥉']
-  "#{values.size > number.to_i ? values[number.to_i] : values.first} #{number}"
-end
-
-# Surround string with brackets if condition is true
-def surround(string, condition)
-  condition ? "\\[#{string}]" : string
-end
-
-def type_char(tournament_type)
-  case tournament_type
-  when 'Асинхрон'
-    'А'
-  when 'Синхрон'
-    'С'
-  when 'Обычный'
-    'Т'
-  else
-    '?'
-  end
-end
-
 def weekly(event:, context:)
   input = JSON.parse(event["Records"].first["body"])
 
@@ -87,8 +51,8 @@ def weekly(event:, context:)
     is_base = ChgkRating.client.team_players_at_tournament(tournament, team).count(&:is_base) >= 4
 
     [
-      "#{surround(result.diff_bonus || 0, !is_base || !tournament.tournament_in_rating)} _(#{result.bonus_b})_",
-      "*[#{type_char(tournament.type_name)}]*",
+      "#{Bot::Util.surround(result.diff_bonus || 0, !is_base || !tournament.tournament_in_rating)} _(#{result.bonus_b})_",
+      "*[#{Bot::Util.type_char(tournament.type_name)}]*",
       "[#{tournament.name}](https://rating.chgk.info/tournament/#{tournament.id})",
       "*место* #{result.position || '?'} #{ "(#{result.predicted_position})" if result.predicted_position }",
       "*взято* #{result.questions_total || '?'}/#{tournament.questions_total}"
@@ -99,9 +63,9 @@ def weekly(event:, context:)
     message = <<~MESSAGE
       *Релиз рейтинга от #{ratings[:last].date}*
 
-      *Рейтинг:* #{ratings[:last].rating} (#{arrow(delta[:rating])})
-      *Место:* #{medal(ratings[:last].rating_position)} (#{arrow(-1 * delta[:position])})
-      *В городе:* #{medal(city_position + 1)}
+      *Рейтинг:* #{ratings[:last].rating} (#{Bot::Util.arrow(delta[:rating])})
+      *Место:* #{Bot::Util.medal(ratings[:last].rating_position)} (#{Bot::Util.arrow(-1 * delta[:position])})
+      *В городе:* #{Bot::Util.medal(city_position + 1)}
 
       *Соседи по таблице (город):* 
       #{neighbours.join("\n")}
