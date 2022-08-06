@@ -84,7 +84,7 @@ def weekly(event:, context:)
     next if result.position.to_s == ''
 
     # rating only changed if at least 4 players from base took part in tournament
-    is_base = ChgkRating.client.team_players_at_tournament(tournament.id, team.id).count(&:is_base) >= 4
+    is_base = ChgkRating.client.team_players_at_tournament(tournament, team).count(&:is_base) >= 4
 
     [
       "#{surround(result.diff_bonus || 0, !is_base || !tournament.tournament_in_rating)} _(#{result.bonus_b})_",
