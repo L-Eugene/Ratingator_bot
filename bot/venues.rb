@@ -55,16 +55,16 @@ def handler(event:, context:)
 
   Bot::Chat.scan.each do |chat|
     chat.venues.each do |venue_id|
-      games = VenueWatch[venue_id]
+      games = VenueWatch[venue_id.to_i]
 
       items = games.events.map do |game|
         <<~TEXT
           <a href="https://rating.chgk.info/tournament/#{game[:tournament].id}">#{game[:tournament].name}</a>
           #{game[:tournament].questionQty.map { |_,v| v }.sum} вопросов (сложность #{game[:tournament].difficultyForecast || 'не указана'}) 
           <b>Начало</b> в #{game[:beginning].strftime('%F %R')}
-          <b>Редактор(ы):</b> #{game[:tournament].editors.map{ |e| "#{e.name} #{e.surname}" }.join(', ')}
-          <b>Представитель:</b> #{game[:representative].name} #{game[:representative].surname}
-          <b>Ведущий:</b> #{game[:narrators].map { |n| "#{n.name} #{n.surname}" }.join(', ')}
+          <b>Редактор(ы):</b> #{game[:tournament].editors.map{ |e| "#{e['name']} #{e['surname']}" }.join(', ')}
+          <b>Представитель:</b> #{game[:representative]['name']} #{game[:representative]['surname']}
+          <b>Ведущий:</b> #{game[:narrators].map { |n| "#{n['name']} #{n['surname']}" }.join(', ')}
         TEXT
       end
 
@@ -73,7 +73,7 @@ def handler(event:, context:)
       venue = games.events.first[:venue]
 
       response = telegram.api.send_message(chat_id: chat.id.to_i, text: <<~MESSAGE, parse_mode: 'HTML')
-        <b>Сегодня на площадке #{venue['name']} состоится:</b>
+        <b>Сегодня на площадке #{venue.name} состоится:</b>
 
         #{items.join("\n\n")}
 
