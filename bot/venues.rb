@@ -1,11 +1,16 @@
+# frozen_string_literal: true
+
 require_relative 'lib/common'
 require 'rating_chgk_v2'
 
 require 'telegram/bot'
 
+# rubocop:disable Style/ClassVars
+# Class for venue games tracking
 class VenueWatch
   def self.[](venue_id)
     return @@cache[venue_id] if @@cache.key? venue_id
+
     new venue_id
   end
 
@@ -49,7 +54,9 @@ class VenueWatch
 
   reset_cache!
 end
+# rubocop:enable Style/ClassVars
 
+# rubocop:disable Lint/UnusedMethodArgument
 def handler(event:, context:)
   telegram = Telegram::Bot::Client.new(telegram_token)
 
@@ -60,9 +67,9 @@ def handler(event:, context:)
       items = games.events.map do |game|
         <<~TEXT
           <a href="https://rating.chgk.info/tournament/#{game[:tournament].id}">#{game[:tournament].name}</a>
-          #{game[:tournament].questionQty.map { |_,v| v }.sum} вопросов (сложность #{game[:tournament].difficultyForecast || 'не указана'}) 
+          #{game[:tournament].questionQty.map { |_, v| v }.sum} вопросов (сложность #{game[:tournament].difficultyForecast || 'не указана'})
           <b>Начало</b> #{game[:beginning].strftime('%F в %R')}
-          <b>Редактор(ы):</b> #{game[:tournament].editors.map{ |e| "#{e['name']} #{e['surname']}" }.join(', ')}
+          <b>Редактор(ы):</b> #{game[:tournament].editors.map { |e| "#{e['name']} #{e['surname']}" }.join(', ')}
           <b>Представитель:</b> #{game[:representative]['name']} #{game[:representative]['surname']}
           <b>Ведущий:</b> #{game[:narrators].map { |n| "#{n['name']} #{n['surname']}" }.join(', ')}
         TEXT
@@ -86,3 +93,4 @@ def handler(event:, context:)
 
   { statusCode: 200 }
 end
+# rubocop:enable Lint/UnusedMethodArgument

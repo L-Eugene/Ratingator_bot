@@ -1,8 +1,11 @@
+# frozen_string_literal: true
+
 module Bot
+  # Database record of chat options
   class Chat
     include Aws::Record
 
-    set_table_name ENV['DYNAMO_TABLE']
+    set_table_name ENV.fetch('DYNAMO_TABLE', nil)
 
     integer_attr :id, hash_key: true, database_attribute_name: 'chat_id'
     integer_attr :team_id

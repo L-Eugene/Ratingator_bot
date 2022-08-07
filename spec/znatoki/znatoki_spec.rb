@@ -21,7 +21,7 @@ YAML.load_file(File.join FIXTURES_PATH, 'znatoki', 'datasets.yml').each do |data
     dataset[:testcases].each do |testcase|
       it testcase[:description] do
         Timecop.freeze("#{testcase[:date]} 12:00:00") if testcase.key? :date
-        data = get_poll_options
+        data = poll_options
         eval testcase[:expectations]
       end
     end
