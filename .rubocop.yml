@@ -1,0 +1,38 @@
+AllCops:
+  TargetRubyVersion: 2.7
+  NewCops: enable
+  SuggestExtensions: false
+  Exclude:
+    - 'schema.rb'
+
+Style/RegexpLiteral:
+  EnforcedStyle: percent_r
+
+Layout/LineLength:
+  Max: 120
+
+Metrics/BlockLength:
+  Exclude:
+    - Rakefile
+
+Metrics/MethodLength:
+  Max: 70
+
+Metrics/ClassLength:
+  Max: 300
+
+Metrics/AbcSize:
+  Max: 165
+
+Metrics/CyclomaticComplexity:
+  Max: 40
+
+Metrics/PerceivedComplexity:
+  Max: 35
+
+Style/MixinUsage:
+  Exclude:
+    - 'Rakefile'
+
+Style/OptionalBooleanParameter:
+  Enabled: false

@@ -1,0 +1,17 @@
+AllCops:
+  NewCops: enable
+
+Style/RegexpLiteral:
+  EnforcedStyle: percent_r
+
+Style/BlockComments:
+  Enabled: false
+
+Metrics/BlockLength:
+  Enabled: false
+
+Layout/LineLength:
+  Enabled: false
+
+Lint/EmptyBlock:
+  Enabled: false
