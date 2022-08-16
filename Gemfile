@@ -1,5 +1,5 @@
-%w(bot layer).each do |dir|
-  eval(File.read("#{dir}/Gemfile"), nil, "#{dir}/Gemfile") if File.exists?("#{dir}/Gemfile")
+%w[bot layer].each do |dir|
+  eval(File.read("#{dir}/Gemfile"), nil, "#{dir}/Gemfile") if File.exist?("#{dir}/Gemfile")
 end
 
 source 'https://rubygems.org' do

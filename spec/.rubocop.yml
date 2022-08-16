@@ -15,3 +15,7 @@ Layout/LineLength:
 
 Lint/EmptyBlock:
   Enabled: false
+
+# I'm ok with using evan in UT
+Security/Eval:
+  Enabled: false

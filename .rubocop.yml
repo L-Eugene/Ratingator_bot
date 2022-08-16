@@ -36,3 +36,11 @@ Style/MixinUsage:
 
 Style/OptionalBooleanParameter:
   Enabled: false
+
+Style/FrozenStringLiteralComment:
+  Exclude:
+    - 'Gemfile'
+
+Security/Eval:
+  Exclude:
+    - 'Gemfile'

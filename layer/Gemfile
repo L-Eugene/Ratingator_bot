@@ -1,9 +1,11 @@
-source "https://rubygems.org"
+# frozen_string_literal: true
 
-gem 'telegram-bot-ruby', '~> 0.20.0'
+source 'https://rubygems.org'
+
+gem 'aws-record', '~> 2.0'
 gem 'chgk_rating', '~> 2.2.0'
 gem 'rating-chgk-v2', '~> 1.1.0'
-gem 'aws-record', '~> 2.0'
 gem 'rss', '~> 0.2.9'
+gem 'telegram-bot-ruby', '~> 0.20.0'
 
 ruby '~> 2.7.0'
