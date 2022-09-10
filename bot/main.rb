@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 require 'telegram/bot'
-require 'chgk_rating'
+require 'rating_chgk_v2'
 require 'json'
 
 require_relative 'lib/common'
@@ -174,8 +174,8 @@ def message_handler(event:, context:)
     team_id = update.message.text.match(%r{/watch\s([0-9]+)})[1].to_i
 
     begin
-      team = ChgkRating.client.team(team_id)
-    rescue ChgkRating::Error => e
+      team = RatingChgkV2.client.team(team_id)
+    rescue RatingChgkV2::Error => e
       telegram.api.send_message(chat_id: update.message.chat.id,
                                 text: "Ошибка: #{JSON.parse(e.message)['error']['message']}")
       return SUCCESS_RESULT
