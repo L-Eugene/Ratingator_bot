@@ -230,7 +230,7 @@ Resources:
         DailyCleanupEvent:
           Type: Schedule
           Properties:
-            Schedule: cron(0 15 ? * * *)
+            Schedule: cron(30 18 ? * * *)
   CleanupPinnedLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
