@@ -6,10 +6,11 @@ YAML.load_file(File.join(FIXTURES_PATH, 'znatoki', 'datasets.yml')).each do |dat
   describe dataset[:description] do
     before :each do
       VCR.turn_off!
+      WebMock.disable_net_connect!(allow_localhost: true)
       stub_request(:get, 'https://znatoki.info/forums/-/index.rss')
         .to_return(body: File.read(File.join(FIXTURES_PATH, 'znatoki', dataset[:file])))
       dataset[:tournaments].each do |trnmt|
-        stub_request(:get, "http://rating.chgk.info/api/tournaments/#{trnmt}")
+        stub_request(:get, "https://api.rating.chgk.net/tournaments/#{trnmt}")
           .to_return(body: File.read(File.join(FIXTURES_PATH, 'znatoki', "tournament.#{trnmt}.json")))
       end
       Timecop.freeze("#{dataset[:date]} 12:00:00")
@@ -17,6 +18,7 @@ YAML.load_file(File.join(FIXTURES_PATH, 'znatoki', 'datasets.yml')).each do |dat
 
     after :each do
       Timecop.return
+      WebMock.allow_net_connect!
       VCR.turn_on!
     end
 

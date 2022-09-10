@@ -4,7 +4,7 @@ require_relative 'lib/common'
 
 require 'rss'
 require 'open-uri'
-require 'chgk_rating'
+require 'rating_chgk_v2'
 require 'telegram/bot'
 
 ANNOUNCE_REGEXP = Regexp.new(
@@ -36,6 +36,8 @@ def poll_options
     feed = RSS::Parser.parse(rss)
     tournaments = feed.items.first.content_encoded.to_enum(:scan, ANNOUNCE_REGEXP).map { Regexp.last_match }
 
+    chgk_client = RatingChgkV2.client
+
     tournaments.map.with_index do |tournament, index|
       date = (tournament[:date] || tournaments[index - 1][:date]).split('.')
                                                                  .map { |x| roman_to_arabic(x) }
@@ -45,12 +47,12 @@ def poll_options
 
       date = DateTime.new(*date)
 
-      record = ChgkRating.client.tournament(tournament[:id])
+      record = chgk_client.tournament(tournament[:id])
 
       next nil if date < Date.today
 
-      "#{localize_day_of_week date.strftime('%a')} #{date.strftime('%F %R')} #{record.type_name} \"#{record.name}\"" +
-        (tournament[:online] ? ' 🎧' : '')
+      "#{localize_day_of_week date.strftime('%a')} #{date.strftime('%F %R')} #{record.type['name']} " \
+        "\"#{record.name}\"#{tournament[:online] ? ' 🎧' : ''}"
     end
   end.compact
 end
