@@ -3,17 +3,47 @@
 require_relative 'lib/common'
 
 require 'telegram/bot'
-require 'chgk_rating'
+require 'rating_chgk_v2'
 require 'json'
+
+class RatingChgkV2::Models::TeamModel
+  def ratings
+    @ratings ||= get_ratings
+  end
+
+  def rating(id)
+    ratings.detect { |r| r.id == id }
+  end
+
+  private
+
+  # Getting team ratings from MAII rating site
+  def get_ratings
+    JSON.parse(
+      Faraday.get("https://rating.maii.li/api/v1/b/teams/#{id}/releases.json").body,
+      object_class: OpenStruct
+    ).items
+  end
+end
+
+class RatingChgkV2::Models::TeamTournamentModel
+  def tournament
+    @tournament ||= RatingChgkV2.client.tournament @idtournament
+  end
+
+  def result
+    @result ||= tournament.results(includeRatingB: true).detect { |r| r.team['id'] == @idteam }
+  end
+end
 
 # rubocop:disable Lint/UnusedMethodArgument
 def weekly(event:, context:)
   input = JSON.parse(event['Records'].first['body'])
 
-  team = ChgkRating.client.team(input['TeamID'])
+  team = RatingChgkV2.client.team(input['TeamID'])
 
   # Calculate latest release id
-  rating_id = 1.step { |i| break i if team.ratings[-i].date < DateTime.now } * -1
+  rating_id = 1.step { |i| break i if DateTime.parse(team.ratings[-i].date) < DateTime.now }
 
   # Team rating changes
   ratings = {
@@ -23,19 +53,21 @@ def weekly(event:, context:)
 
   delta = {
     rating: ratings[:last].rating - ratings[:prev].rating,
-    position: ratings[:last].rating_position - ratings[:prev].rating_position
+    position: ratings[:last].place - ratings[:prev].place
   }
 
   # Ratings inside city of base team
-  city_ratings = ChgkRating.client.search_teams(town: team.town).map do |cteam|
-    cteam.rating(ratings[:last].release_id)
+  city_ratings = RatingChgkV2.client.teams(town: team.town['id'], pagination: false).map do |cteam|
+    obj = cteam.rating(ratings[:last].id)
+    next nil if obj.rating.nil?
+
+    obj.tap { |r| r.team = cteam }
   rescue StandardError
     nil
   end.compact.sort_by(&:rating).reverse
 
   city_position = city_ratings.find_index { |rating| rating.team.id == team.id }
   neighbours = Range.new([0, city_position - 1].max, [city_ratings.size - 1, city_position + 1].min).to_a.map do |index|
-    city_ratings[index].team.eager_load!
     bold = city_ratings[index].team.id == team.id ? '*' : ''
     "#{bold}#{index + 1}.#{bold} " \
       "[#{city_ratings[index].team.name}](https://rating.chgk.info/team/#{city_ratings[index].team.id}) " \
@@ -43,26 +75,26 @@ def weekly(event:, context:)
   end
 
   # Tournaments influenced last rating
-  tournaments = team.tournaments(season_id: 'last').select do |tournament|
-    tournament.eager_load!
-    tournament.date_end <= ratings[:last].date && tournament.date_end > team.ratings[rating_id - 3].date
+  tournaments = team.tournaments[-100, 100].uniq(&:idtournament).select do |relation|
+    Date.parse(relation.tournament.dateEnd).between?(
+      Date.parse(team.ratings[rating_id + 3].date),
+      Date.parse(ratings[:last].date)
+    )
   end
-  tournaments.map! do |tournament|
-    result = tournament.team_list.select { |item| item.team.id == team.id }.first
 
+  tournaments.map! do |relation|
     # Skip tournaments without colculated results
-    next if result.position.to_s == ''
+    next if relation.result.position.to_s == ''
 
-    # rating only changed if at least 4 players from base took part in tournament
-    is_base = ChgkRating.client.team_players_at_tournament(tournament, team).count(&:is_base) >= 4
+    rating = OpenStruct.new(relation.result.rating)
 
     [
-      "#{Bot::Util.surround(result.diff_bonus || 0,
-                            !is_base || !tournament.tournament_in_rating)} _(#{result.bonus_b})_",
-      "*[#{Bot::Util.type_char(tournament.type_name)}]*",
-      "[#{tournament.name}](https://rating.chgk.info/tournament/#{tournament.id})",
-      "*место* #{result.position || '?'} #{"(#{result.predicted_position})" if result.predicted_position}",
-      "*взято* #{result.questions_total || '?'}/#{tournament.questions_total}"
+      "#{Bot::Util.surround(rating.d || 0,
+                            !rating.inRating || !relation.tournament.tournamentInRatingBalanced)} _(#{rating.b})_",
+      "*[#{Bot::Util.type_char(relation.tournament.type['name'])}]*",
+      "[#{relation.tournament.name}](https://rating.chgk.info/tournament/#{relation.idtournament})",
+      "*место* #{relation.result.position || '?'} #{"(#{rating.predictedPosition})" if rating.predictedPosition}",
+      "*взято* #{relation.result.questionsTotal || '?'}/#{relation.tournament.questionQty.map { |_, v| v }.sum}"
     ].join(' ')
   end.compact!
 
@@ -71,7 +103,7 @@ def weekly(event:, context:)
       *Релиз рейтинга от #{ratings[:last].date}*
 
       *Рейтинг:* #{ratings[:last].rating} (#{Bot::Util.arrow(delta[:rating])})
-      *Место:* #{Bot::Util.medal(ratings[:last].rating_position)} (#{Bot::Util.arrow(-1 * delta[:position])})
+      *Место:* #{Bot::Util.medal(ratings[:last].place)} (#{Bot::Util.arrow(-1 * delta[:position])})
       *В городе:* #{Bot::Util.medal(city_position + 1)}
 
       *Соседи по таблице (город):*#{' '}
