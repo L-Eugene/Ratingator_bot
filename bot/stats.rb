@@ -22,7 +22,7 @@ class RatingChgkV2::Models::TeamModel
     JSON.parse(
       Faraday.get("https://rating.maii.li/api/v1/b/teams/#{id}/releases.json").body,
       object_class: OpenStruct
-    ).items
+    ).items[0, 5]
   end
 end
 
