@@ -95,6 +95,7 @@ Resources:
   StatsSqsQueue:
     Type: AWS::SQS::Queue
     Properties:
+      MessageRetentionPeriod: 3600
       VisibilityTimeout: 450
 
   # Using Makefile here because of bug https://github.com/aws/aws-lambda-builders/issues/177
@@ -189,6 +190,7 @@ Resources:
     Properties:
       Handler: stats.weekly
       Timeout: 400
+      MemorySize: 256
       Layers:
         - !Ref BotLayer
       Policies:
