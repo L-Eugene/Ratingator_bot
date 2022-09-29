@@ -8,7 +8,7 @@ require 'rating_chgk_v2'
 require 'telegram/bot'
 
 ANNOUNCE_REGEXP = Regexp.new(
-  '((?<date>\d+\.[IVX]+)<.*?)?tournament/(?<id>\d+).*?(?<time>\d{2}:\d{2})(?<online>.*?zoom\.us)?',
+  '((?<date>\d+\.[IVX]+)\)?<.*?)?tournament/(?<id>\d+).*?(?<time>\d{2}:\d{2})(?<online>.*?zoom\.us)?',
   Regexp::IGNORECASE | Regexp::MULTILINE | Regexp::EXTENDED
 ).freeze
 
