@@ -75,7 +75,8 @@ def weekly(event:, context:)
   end
 
   # Tournaments influenced last rating
-  tournaments = team.tournaments[-100, 100].uniq(&:idtournament).select do |relation|
+  block_size = [team.tournaments.items.size, 30].min
+  tournaments = team.tournaments(pagination: 'false')[-block_size, block_size].uniq(&:idtournament).select do |relation|
     Date.parse(relation.tournament.dateEnd).between?(
       Date.parse(team.ratings[rating_id + 3].date),
       Date.parse(ratings[:last].date)
