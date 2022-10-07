@@ -8,7 +8,7 @@ require 'rating_chgk_v2'
 require 'telegram/bot'
 
 ANNOUNCE_REGEXP = Regexp.new(
-  '((?<date>\d+\.[IVX]+)\)?<.*?)?tournament/(?<id>\d+).*?(?<time>\d{2}:\d{2})(?<online>.*?zoom\.us)?',
+  '((?<date>\d+\.[IVXХ]+)\)?<.*?)?tournament/(?<id>\d+).*?(?<time>\d{2}:\d{2})(?<online>.*?zoom\.us)?',
   Regexp::IGNORECASE | Regexp::MULTILINE | Regexp::EXTENDED
 ).freeze
 
@@ -24,6 +24,7 @@ RUSSIAN_DAYS = {
 }.freeze
 
 def roman_to_arabic(number)
+  number.tr!('Х', 'X')
   (%r{^[IVX]+$} =~ number.to_s.upcase ? ROMAN_MONTHS.find_index(number) + 1 : number).to_i
 end
 
