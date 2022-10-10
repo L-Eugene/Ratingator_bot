@@ -47,7 +47,7 @@ def weekly(event:, context:)
 
   # Team rating changes
   ratings = {
-    prev: team.ratings[rating_id - 1],
+    prev: team.ratings[rating_id + 1],
     last: team.ratings[rating_id]
   }
 
