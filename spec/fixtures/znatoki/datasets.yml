@@ -29,3 +29,16 @@
       :expectations: |
         expect(data.first).to include '🎧'
         data[1..-1].each { |line| expect(line).not_to include '🎧' }
+- :file: index.rss.3.xml
+  :description: znatoki.info RSS monitoring tests (formatting v2)
+  :date: 2022-09-29
+  :tournaments:
+    - 8376
+    - 7696
+  :testcases:
+    - :description: should find two tournaments
+      :expectations: expect(data.size).to be 2
+    - :description: should mark online tournament with symbol
+      :expectations: |
+        expect(data.first).to include '🎧'
+        data[1..-1].each { |line| expect(line).not_to include '🎧' }
