@@ -29,7 +29,7 @@ Example:
 Bot cat get game announces from [znatoki.info](https://znatoki.info) website. In that case it will check the site rss once a week (schedule can be changed on deployment stage)
 and create a poll with the list of announced games so team players can let everyone know what games they are going to attend.
 
-Can be enabled with `/znatoki_on` command and disabled with `/znatoki_off` command.
+Can be enabled with `/znatoki_on` command and disabled with `/znatoki_off` command. If you want to scan announces right now - use `/znatoki_force` command.
 
 By default the poll will contain all game definitions from the site and "Can not attend" option. 
 If you want other options to be appended to your polls, you can use `/extra_poll_options` command.
