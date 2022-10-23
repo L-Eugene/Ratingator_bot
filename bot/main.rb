@@ -165,6 +165,8 @@ def message_handler(event:, context:)
 
   chat = Bot::Chat.find_or_create(id: update.message.chat.id)
 
+  return SUCCESS_RESULT if Bot::Command::Base.process(chat, update.message)
+
   case update.message.text
   when %r{^/help|^/start}
     telegram.api.send_message(chat_id: update.message.chat.id, text: help_message, parse_mode: 'Markdown')

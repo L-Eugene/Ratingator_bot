@@ -19,4 +19,6 @@ module Bot
   autoload :Util, "#{File.dirname(__FILE__)}/util.rb"
 
   autoload :Chat, "#{File.dirname(__FILE__)}/chat.rb"
+
+  autoload :Command, "#{File.dirname(__FILE__)}/command.rb"
 end
