@@ -1,0 +1,106 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: https://api.rating.chgk.net/venues/3564
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - application/json
+      User-Agent:
+      - rating-chgk-v2 gem/1.1.0
+      Content-type:
+      - application/json
+      Accept-Encoding:
+      - gzip,deflate,br
+      Authorization:
+      - 'Bearer '
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      server:
+      - nginx/1.14.0 (Ubuntu)
+      content-type:
+      - application/json; charset=utf-8
+      transfer-encoding:
+      - chunked
+      connection:
+      - keep-alive
+      vary:
+      - Accept
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - deny
+      cache-control:
+      - no-cache, private
+      date:
+      - Mon, 01 Aug 2022 21:09:45 GMT
+      link:
+      - <https://api.rating.chgk.net/docs.jsonld>; rel="http://www.w3.org/ns/hydra/core#apiDocumentation"
+      etag:
+      - '"9eab0951801ae0aa93abaacd87ba68c3"'
+    body:
+      encoding: UTF-8
+      string: '{"id":3564,"name":"ДК Гомсельмаш","town":{"id":74,"name":"Гомель","region":{"id":34,"name":"Гомельская
+        область","country":{"id":5,"name":"Беларусь"}},"country":{"id":5,"name":"Беларусь"}},"type":{"id":1,"name":"Постоянная"},"address":"г.Гомель,
+        Проспект Космонавтов, 22","urls":["http:\/\/znatoki.info"]}'
+  recorded_at: Sun, 26 Jun 2022 09:00:00 GMT
+- request:
+    method: get
+    uri: https://api.rating.chgk.net/venues/3564/requests?dateStart%5Bstrictly_after%5D=2022-06-26&dateStart%5Bstrictly_before%5D=2022-06-27
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - application/json
+      User-Agent:
+      - rating-chgk-v2 gem/1.1.0
+      Content-type:
+      - application/json
+      Accept-Encoding:
+      - gzip,deflate,br
+      Authorization:
+      - 'Bearer '
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      server:
+      - nginx/1.14.0 (Ubuntu)
+      content-type:
+      - application/json; charset=utf-8
+      transfer-encoding:
+      - chunked
+      connection:
+      - keep-alive
+      vary:
+      - Accept
+      x-content-type-options:
+      - nosniff
+      x-frame-options:
+      - deny
+      cache-control:
+      - no-cache, private
+      date:
+      - Mon, 01 Aug 2022 21:09:45 GMT
+      link:
+      - <https://api.rating.chgk.net/docs.jsonld>; rel="http://www.w3.org/ns/hydra/core#apiDocumentation"
+      etag:
+      - '"1fd3dcd357f455c8184a53dfaf3b1274"'
+    body:
+      encoding: UTF-8
+      string: '[{"id":107030,"status":"A","venue":{"id":3564,"name":"ДК Гомсельмаш","town":{"id":74,"name":"Гомель","region":{"id":34,"name":"Гомельская
+        область","country":{"id":5,"name":"Беларусь"}},"country":{"id":5,"name":"Беларусь"}},"type":{"id":1,"name":"Постоянная"},"address":"г.Гомель,
+        Проспект Космонавтов, 22","urls":["http:\/\/znatoki.info"]},"representative":{"id":10177,"name":"Александр","patronymic":"Сергеевич","surname":"Евтушков"},"narrators":[{"id":15026,"name":"Николай","patronymic":"Юрьевич","surname":"Козырев"}],"approximateTeamsCount":3,"issuedAt":"2022-06-24T17:01:12+03:00","dateStart":"2022-06-26T12:00:00+03:00","tournamentId":8141},{"id":107031,"status":"C","venue":{"id":3564,"name":"ДК
+        Гомсельмаш","town":{"id":74,"name":"Гомель","region":{"id":34,"name":"Гомельская
+        область","country":{"id":5,"name":"Беларусь"}},"country":{"id":5,"name":"Беларусь"}},"type":{"id":1,"name":"Постоянная"},"address":"г.Гомель,
+        Проспект Космонавтов, 22","urls":["http:\/\/znatoki.info"]},"representative":{"id":10177,"name":"Александр","patronymic":"Сергеевич","surname":"Евтушков"},"narrators":[{"id":15026,"name":"Николай","patronymic":"Юрьевич","surname":"Козырев"}],"approximateTeamsCount":3,"issuedAt":"2022-06-24T17:01:45+03:00","dateStart":"2022-06-26T14:00:00+03:00","tournamentId":7589}]'
+  recorded_at: Sun, 26 Jun 2022 09:00:00 GMT
+recorded_with: VCR 6.1.0

@@ -29,7 +29,7 @@ class VenueWatch
     @data = @venue.requests(
       'dateStart[strictly_before]': (Date.today + 1).to_s,
       'dateStart[strictly_after]': Date.today.to_s
-    )
+    ).select { |r| r.status == 'A' }
 
     @@cache[venue_id] = self
   end

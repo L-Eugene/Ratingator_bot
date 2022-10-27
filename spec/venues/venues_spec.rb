@@ -57,4 +57,21 @@ describe VenueWatch do
       end
     end
   end
+
+  context 'two requests, one cancelled' do
+    let(:result) do
+      VCR.use_cassette('venues/3564') { VenueWatch[3564] }
+    end
+
+    it 'should sort tournaments by beginning time' do
+      VCR.use_cassette('venues/two_tournaments') do
+        expect(result.events.size).to eq 1
+
+        expect(result.events.map { |x| x[:tournament].id }).to match_array [8141]
+
+        expect(result.events.first[:tournament].name).to eq 'Лето в Тюмени. Божоле Нуво'
+        expect(result.events.first[:beginning]).to eq DateTime.parse('2022-06-26 12:00 GMT+3')
+      end
+    end
+  end
 end
