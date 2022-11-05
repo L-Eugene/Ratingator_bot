@@ -24,8 +24,23 @@ module Bot
       def self.telegram
         @@telegram ||= Telegram::Bot::Client.new(telegram_token)
       end
+
+      def self.telegram_exception(message, text)
+        telegram.api.send_message(
+          chat_id: message.chat.id,
+          reply_to_message_id: message.message_id,
+          text: text
+        )
+
+        SUCCESS_RESULT
+      end
+
+      def self.only_admin_allowed(message)
+        telegram_exception(message, 'Только администратор чата может выполнять эту команду.')
+      end
     end
   end
 end
 
 require_relative 'command_help'
+require_relative 'command_rating'

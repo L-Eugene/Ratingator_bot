@@ -168,28 +168,6 @@ def message_handler(event:, context:)
   return SUCCESS_RESULT if Bot::Command::Base.process(chat, update.message)
 
   case update.message.text
-  when %r{^/help|^/start}
-    telegram.api.send_message(chat_id: update.message.chat.id, text: help_message, parse_mode: 'Markdown')
-  when %r{^/watch\s[0-9]+}
-    return self_registration_disabled(update.message) if ENV['ALLOW_SELF_REGISTRATION'] == 'false'
-    return only_admin_allowed(update.message) unless admin?(userid: update.message.from.id, chat: chat)
-
-    team_id = update.message.text.match(%r{/watch\s([0-9]+)})[1].to_i
-
-    begin
-      team = RatingChgkV2.client.team(team_id)
-    rescue RatingChgkV2::Error => e
-      telegram.api.send_message(chat_id: update.message.chat.id,
-                                text: "Ошибка: #{JSON.parse(e.message)['error']['message']}")
-      return SUCCESS_RESULT
-    end
-
-    if chat.update(team_id: team_id)
-      telegram.api.send_message(chat_id: update.message.chat.id,
-                                text: "Слежение за командой #{team.name} (##{team_id}) включено.")
-    else
-      telegram.api.send_message(chat_id: update.message.chat.id, text: 'Не удалось включить слежение за командой.')
-    end
   when %r{^/znatoki_(on|off)}
     return action_disabled(update.message) unless ENV['ALLOW_ZNATOKI_POLLS']
     return only_admin_allowed(update.message) unless admin?(user_id: update.message.from.id, chat: chat)
@@ -209,15 +187,6 @@ def message_handler(event:, context:)
     return only_admin_allowed(update.message) unless admin?(user_id: update.message.from.id, chat: chat)
 
     unwatch_venue(chat, update.message)
-  when %r{^/unwatch}
-    return self_registration_disabled(update.message) if ENV['ALLOW_SELF_REGISTRATION'] == 'false'
-    return only_admin_allowed(update.message) unless admin?(user_id: update.message.from.id, chat: chat)
-
-    if chat.update(team_id: nil)
-      telegram.api.send_message(chat_id: update.message.chat.id, text: 'Слежение за командой прекращено.')
-    else
-      telegram.api.send_message(chat_id: update.message.chat.id, text: 'Не удалось отключить слежение за командой.')
-    end
   when %r{^/extra_poll_options}
     return only_admin_allowed(update.message) unless admin?(user_id: update.message.from.id, chat: chat)
 

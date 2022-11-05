@@ -26,9 +26,16 @@ module Bot
       id.negative?
     end
 
-    def pin_message(message_id, deadline = Date.today)
-      telegram = Telegram::Bot::Client.new(telegram_token)
+    # Checks if chat member is admin
+    def admin?(member)
+      return true if private?
 
+      telegram.api
+        .get_chat_administrators(chat_id: id)['result']
+        .any? { |x| x['user']['id'].to_i == member.to_i }
+    end
+
+    def pin_message(message_id, deadline = Date.today)
       telegram.api.pin_chat_message(chat_id: id, message_id: message_id)
 
       update(pinned: pinned + [message_id: message_id, deadline: deadline.to_s])
@@ -39,8 +46,6 @@ module Bot
 
       return if list.empty?
 
-      telegram = Telegram::Bot::Client.new(telegram_token)
-
       list.each do |p|
         telegram.api.unpin_chat_message(chat_id: id, message_id: p['message_id'].to_i)
       rescue Telegram::Bot::Exceptions::ResponseError => e
@@ -48,6 +53,12 @@ module Bot
       end
 
       update(pinned: pinned - list)
+    end
+
+    private
+
+    def telegram
+      @telegram ||= Telegram::Bot::Client.new(telegram_token)
     end
   end
 end
