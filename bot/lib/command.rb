@@ -44,3 +44,4 @@ end
 
 require_relative 'command_help'
 require_relative 'command_rating'
+require_relative 'command_venues'
