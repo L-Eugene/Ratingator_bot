@@ -4,12 +4,14 @@ module Bot
     class Base
       def self.process(chat, message)
         klasses = self.descendants.select { |klass| klass.match?(message) }
-        if klasses.empty?
-          false
-        else
-          klasses.each { |klass| klass.process(chat, message) }
-          true
+        return false if klasses.empty?
+
+        klasses.each do |klass|
+          puts "Processing command in #{klass.to_s} class"
+          klass.process(chat, message)
         end
+
+        true
       end
 
       def self.match?(_message)
