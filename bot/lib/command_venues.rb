@@ -1,3 +1,5 @@
+require 'rating_chgk_v2'
+
 module Bot
   module Command
     class Venues < Base

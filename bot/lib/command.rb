@@ -38,6 +38,10 @@ module Bot
       def self.only_admin_allowed(message)
         telegram_exception(message, 'Только администратор чата может выполнять эту команду.')
       end
+
+      def self.action_disabled(message)
+        telegram_exception(message, "Команда запрещена. Свяжитесь с владельцем бота.")
+      end
     end
   end
 end
@@ -46,3 +50,4 @@ require_relative 'command_help'
 require_relative 'command_rating'
 require_relative 'command_venues'
 require_relative 'command_random'
+require_relative 'command_znatoki'
