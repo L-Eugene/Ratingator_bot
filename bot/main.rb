@@ -23,32 +23,6 @@ def help_message
   TEXT
 end
 
-def randomize(message)
-  mask = message.text.include?("\n") ? "\n" : ' '
-
-  list = message.text
-                .gsub(%r{^/[^\s]+\s}, '')
-                .split(mask)
-                .compact
-                .map { |x| x.gsub(%r{[,\s]*$}, '') }
-
-  if list.size < 2
-    telegram.api.send_message(
-      text: 'Слишком короткий список вариантов. ' \
-            'Введите варианты, разделенные пробелом или переводом строки, в ответе на это сообщение.',
-      chat_id: message.chat.id,
-      reply_to_message_id: message.message_id,
-      parse_mode: 'Markdown'
-    )
-    return
-  end
-
-  telegram.api.send_message(chat_id: message.chat.id, text: <<~TXT, parse_mode: 'Markdown')
-    *Из следущих вариантов:* #{list.join(', ')}
-    *Я выбрал* #{list.sample}
-  TXT
-end
-
 def extra_poll_options(chat, message)
   list = message.text.split("\n").map(&:strip).grep_v(%r{^/})
   chat.update(extra_poll_options: list)
@@ -144,11 +118,7 @@ def message_handler(event:, context:)
     return only_admin_allowed(update.message) unless admin?(user_id: update.message.from.id, chat: chat)
 
     extra_poll_options(chat, update.message)
-  when %r{^/random}
-    randomize(update.message)
   else
-    randomize(update.message) if update.message&.reply_to_message&.text =~ %r{^Слишком короткий список вариантов}
-
     if update.message&.reply_to_message&.text =~ %r{Дополнительные варианты удалены} && admin?(
       user_id: update.message.from.id, chat: chat
     )
