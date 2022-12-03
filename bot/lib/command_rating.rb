@@ -61,6 +61,13 @@ module Bot
       def self.registration_disabled(message)
         telegram_exception(message, 'Управление слежением запрещено. Свяжитесь с владельцем бота.')
       end
+
+      def self.cmd_help
+        [
+          ['/watch <team\\_id>', 'следить за рейтингом команды (один чат - одна команда)'],
+          ['/unwatch', 'перестать следить за рейтингом команды']
+        ]
+      end
     end
   end
 end

@@ -5,19 +5,6 @@ require 'json'
 
 require_relative 'lib/common'
 
-def help_message
-  <<~TEXT
-    /help - вывести это сообщение
-    /watch <team\\_id> - следить за рейтингом команды (один чат - одна команда)
-    /unwatch - перестать следить за рейтингом команды
-    /znatoki\\_on - следить за анонсами на сайте [Гомельского клуба](http://znatoki.info)
-    /znatoki\\_off - перестать следить за анонсами на сайте [Гомельского клуба](http://znatoki.info)
-    /znatoki\\_force - получить опрос с анонсом [Гомельского клуба](http://znatoki.info) прямо сейчас
-    /venues - вывести список наблюдаемых площадок и инструкцию по управлению списком
-    /random - выбрать случайный вариант из заданных
-  TEXT
-end
-
 # rubocop:disable Lint/UnusedMethodArgument
 def unpin_messages(event:, context:)
   Bot::Chat.scan.each(&:unpin_messages!)

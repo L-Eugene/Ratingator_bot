@@ -31,6 +31,10 @@ module Bot
           parse_mode: 'Markdown'
         )
       end
+
+      def self.cmd_help
+        [['/random', 'выбрать случайный вариант из заданных']]
+      end
     end
   end
 end

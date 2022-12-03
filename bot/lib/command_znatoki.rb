@@ -54,6 +54,14 @@ module Bot
 
         switch(chat, message)
       end
+
+      def self.cmd_help
+        [
+          ['/znatoki\\_on', 'следить за анонсами на сайте [Гомельского клуба](http://znatoki.info)'],
+          ['/znatoki\\_off', 'перестать следить за анонсами на сайте [Гомельского клуба](http://znatoki.info)'],
+          ['/znatoki\\_force', 'получить опрос с анонсом [Гомельского клуба](http://znatoki.info) прямо сейчас']
+        ]
+      end
     end
   end
 end

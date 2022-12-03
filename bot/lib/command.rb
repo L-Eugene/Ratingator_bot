@@ -44,6 +44,10 @@ module Bot
       def self.action_disabled(message)
         telegram_exception(message, "Команда запрещена. Свяжитесь с владельцем бота.")
       end
+
+      def self.cmd_help
+        []
+      end
     end
   end
 end

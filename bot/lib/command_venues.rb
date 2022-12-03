@@ -77,6 +77,10 @@ module Bot
           #{list.join("\n")}
         TXT
       end
+
+      def self.cmd_help
+        [['/venues', 'вывести список наблюдаемых площадок и инструкцию по управлению списком']]
+      end
     end
   end
 end
