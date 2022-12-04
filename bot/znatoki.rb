@@ -1,11 +1,9 @@
 # frozen_string_literal: true
 
-require_relative 'lib/common'
+require_relative 'common'
 
 require 'rss'
 require 'open-uri'
-require 'rating_chgk_v2'
-require 'telegram/bot'
 
 ANNOUNCE_REGEXP = Regexp.new(
   '((?<date>\d+\.[IVXХ]+)\)?<.*?)?tournament/(?<id>\d+).*?(?<time>\d{2}:\d{2})(?<online>.*?(zoom\.us|discord\.gg))?',

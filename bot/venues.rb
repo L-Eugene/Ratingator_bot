@@ -1,9 +1,6 @@
 # frozen_string_literal: true
 
-require_relative 'lib/common'
-require 'rating_chgk_v2'
-
-require 'telegram/bot'
+require_relative 'common'
 
 # rubocop:disable Style/ClassVars
 # Class for venue games tracking

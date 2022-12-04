@@ -1,9 +1,6 @@
 # frozen_string_literal: true
 
-require 'telegram/bot'
-require 'json'
-
-require_relative 'lib/common'
+require_relative 'common'
 
 # rubocop:disable Lint/UnusedMethodArgument
 def unpin_messages(event:, context:)

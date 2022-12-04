@@ -1,10 +1,6 @@
 # frozen_string_literal: true
 
-require_relative 'lib/common'
-
-require 'telegram/bot'
-require 'rating_chgk_v2'
-require 'json'
+require_relative 'common'
 
 class RatingChgkV2::Models::TeamModel
   def ratings

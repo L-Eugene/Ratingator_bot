@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'lib/common'
+require 'common'
 
 describe Bot::Util do
   before :each do
