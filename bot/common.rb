@@ -11,6 +11,9 @@ loader = Zeitwerk::Loader.new
 loader.push_dir("#{__dir__}/lib")
 loader.setup
 
+# Command processing will not work properly unless it's eager loaded
+loader.eager_load_dir("#{__dir__}/lib/bot/command")
+
 SUCCESS_RESULT = { statusCode: 200 }.freeze
 
 def telegram_token
