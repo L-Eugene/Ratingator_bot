@@ -2,33 +2,39 @@
 
 require_relative 'common'
 
-class RatingChgkV2::Models::TeamModel
-  def ratings
-    @ratings ||= get_ratings
-  end
+module RatingChgkV2
+  module Models
+    # loading team ratings from MAII
+    class TeamModel
+      def ratings
+        @ratings ||= ratings_data
+      end
 
-  def rating(id)
-    ratings.detect { |r| r.id == id }
-  end
+      def rating(id)
+        ratings.detect { |r| r.id == id }
+      end
 
-  private
+      private
 
-  # Getting team ratings from MAII rating site
-  def get_ratings
-    JSON.parse(
-      Faraday.get("https://rating.maii.li/api/v1/b/teams/#{id}/releases.json").body,
-      object_class: OpenStruct
-    ).items[0, 5]
-  end
-end
+      # Getting team ratings from MAII rating site
+      def ratings_data
+        JSON.parse(
+          Faraday.get("https://rating.maii.li/api/v1/b/teams/#{id}/releases.json").body,
+          object_class: OpenStruct
+        ).items[0, 5]
+      end
+    end
 
-class RatingChgkV2::Models::TeamTournamentModel
-  def tournament
-    @tournament ||= RatingChgkV2.client.tournament @idtournament
-  end
+    # loading tournament results
+    class TeamTournamentModel
+      def tournament
+        @tournament ||= RatingChgkV2.client.tournament @idtournament
+      end
 
-  def result
-    @result ||= tournament.results(includeRatingB: true).detect { |r| r.team['id'] == @idteam }
+      def result
+        @result ||= tournament.results(includeRatingB: true).detect { |r| r.team['id'] == @idteam }
+      end
+    end
   end
 end
 

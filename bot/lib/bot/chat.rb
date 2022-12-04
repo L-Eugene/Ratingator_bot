@@ -31,8 +31,8 @@ module Bot
       return true if private?
 
       telegram.api
-        .get_chat_administrators(chat_id: id)['result']
-        .any? { |x| x['user']['id'].to_i == member.to_i }
+              .get_chat_administrators(chat_id: id)['result']
+              .any? { |x| x['user']['id'].to_i == member.to_i }
     end
 
     def pin_message(message_id, deadline = Date.today)

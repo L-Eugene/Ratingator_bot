@@ -37,6 +37,9 @@ Style/MixinUsage:
 Style/OptionalBooleanParameter:
   Enabled: false
 
+Style/OpenStructUse:
+  Enabled: false
+
 Style/FrozenStringLiteralComment:
   Exclude:
     - 'Gemfile'

@@ -1,5 +1,8 @@
+# frozen_string_literal: true
+
 module Bot
   module Command
+    # Randomizer command
     class Random < Base
       def self.match?(message)
         message.text =~ %r{^/random} || message&.reply_to_message&.text =~ %r{^Слишком короткий список вариантов}
@@ -10,7 +13,7 @@ module Bot
 
         return usage(message) if list.size < 2
 
-        telegram.api.send_message(chat_id: message.chat.id, text: <<~TXT, parse_mode: 'Markdown')
+        telegram.api.send_message(chat_id: chat.id, text: <<~TXT, parse_mode: 'Markdown')
           *Из следущих вариантов:* #{list.join(', ')}
           *Я выбрал* #{list.sample}
         TXT
@@ -25,7 +28,7 @@ module Bot
       def self.usage(message)
         telegram.api.send_message(
           text: 'Слишком короткий список вариантов. ' \
-            'Введите варианты, разделенные пробелом или переводом строки, в ответе на это сообщение.',
+                'Введите варианты, разделенные пробелом или переводом строки, в ответе на это сообщение.',
           chat_id: message.chat.id,
           reply_to_message_id: message.message_id,
           parse_mode: 'Markdown'

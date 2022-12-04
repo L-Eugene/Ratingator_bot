@@ -1,7 +1,8 @@
-require 'rating_chgk_v2'
+# frozen_string_literal: true
 
 module Bot
   module Command
+    # Commands for venues monitoring
     class Venues < Base
       def self.process(chat, message)
         return only_admin_allowed(message) unless chat.admin?(message.from.id)

@@ -1,9 +1,12 @@
+# frozen_string_literal: true
+
 module Bot
   module Command
+    # Help command
     class Help < Base
-      def self.process(chat, _message)
+      def self.process(chat, _)
         help_message = Base.descendants
-                           .each_with_object([]) { |klass, arr| klass.cmd_help.each { |h| arr << h }  }
+                           .each_with_object([]) { |klass, arr| klass.cmd_help.each { |h| arr << h } }
                            .map { |elm| "#{elm.first} - #{elm.last}" }
                            .join("\n")
 

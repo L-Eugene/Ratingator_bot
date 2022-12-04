@@ -1,13 +1,13 @@
-require 'rating_chgk_v2'
+# frozen_string_literal: true
 
 module Bot
   module Command
+    # Commands for team rating tracking
     class Rating < Base
       def self.process(chat, message)
-        case
-        when watch?(message)
+        if watch?(message)
           watch(chat, message)
-        when unwatch?(message)
+        elsif unwatch?(message)
           unwatch(chat, message)
         end
       end
@@ -40,9 +40,11 @@ module Bot
 
         telegram.api.send_message(
           chat_id: chat.id,
-          text: chat.update(team_id: team_id) ?
-                  "Слежение за командой #{team.name} (##{team_id}) включено." :
+          text: if chat.update(team_id: team_id)
+                  "Слежение за командой #{team.name} (##{team_id}) включено."
+                else
                   'Не удалось включить слежение за командой.'
+                end
         )
       end
 
@@ -52,9 +54,11 @@ module Bot
 
         telegram.api.send_message(
           chat_id: chat.id,
-          text: chat.update(team_id: nil) ?
-                  'Слежение за командой прекращено.' :
+          text: if chat.update(team_id: nil)
+                  'Слежение за командой прекращено.'
+                else
                   'Не удалось отключить слежение за командой.'
+                end
         )
       end
 
@@ -71,4 +75,3 @@ module Bot
     end
   end
 end
-

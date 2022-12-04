@@ -1,7 +1,10 @@
+# frozen_string_literal: true
+
 module Bot
   module Command
+    # Commands for monitoring znatoki.info
     class Znatoki < Base
-      LIST_EMPTY_MESSAGE = <<~TXT.freeze
+      LIST_EMPTY_MESSAGE = <<~TXT
         *Дополнительные варианты ответа удалены.*
         Если вы хотите их добавить - используйте команду /extra\\_poll\\_options со списком (отделяйте варианты переводом строки) или пришлите список в ответ на это сообщение.'
       TXT
@@ -22,7 +25,7 @@ module Bot
         message.text =~ %r{^/znatoki_force}
       end
 
-      def self.force(chat, message)
+      def self.force(chat, _)
         require_relative '../znatoki'
         create_polls event: nil, context: { chats: [chat] }
       end
@@ -41,7 +44,10 @@ module Bot
           #{list.map { |s| " - #{s}" }.join("\n")}
         TXT
 
-        telegram.api.send_message chat_id: chat.id, reply_to_message: message.message_id, parse_mode: 'Markdown', text: text
+        telegram.api.send_message chat_id: chat.id,
+                                  reply_to_message: message.message_id,
+                                  parse_mode: 'Markdown',
+                                  text: text
       end
 
       def self.process(chat, message)
