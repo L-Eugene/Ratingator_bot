@@ -53,7 +53,7 @@ def poll_options
       "#{localize_day_of_week date.strftime('%a')} #{date.strftime('%F %R')} #{record.type['name']} " \
         "\"#{record.name}\"#{tournament[:online] ? ' 🎧' : ''}"
     end
-  end.compact
+  end.map { |s| s.length > 99 ? "#{s[0..96]}..." : s }.compact
 end
 
 # rubocop:disable Lint/UnusedMethodArgument
