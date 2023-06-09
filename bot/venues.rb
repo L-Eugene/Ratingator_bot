@@ -37,7 +37,7 @@ class VenueWatch
         tournament: tournament(event.tournamentId),
         venue: @venue,
         representative: event.representative,
-        narrators: event.narrators,
+        narrator: event.narrator,
         beginning: DateTime.parse(event.dateStart)
       }
     end
@@ -68,7 +68,7 @@ def handler(event:, context:)
           <b>Начало</b> #{game[:beginning].strftime('%F в %R')}
           <b>Редактор(ы):</b> #{game[:tournament].editors.map { |e| "#{e['name']} #{e['surname']}" }.join(', ')}
           <b>Представитель:</b> #{game[:representative]['name']} #{game[:representative]['surname']}
-          <b>Ведущий:</b> #{game[:narrators].map { |n| "#{n['name']} #{n['surname']}" }.join(', ')}
+          <b>Ведущий:</b> #{game[:narrator]['name']} #{game[:narrator]['surname']}
         TEXT
       end
 
