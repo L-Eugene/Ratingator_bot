@@ -115,7 +115,7 @@ def weekly(event:, context:)
       *Последние учтенные турниры:*
       #{tournaments.join("\n")}
 
-      \#ratingator
+      #ratingator
     MESSAGE
 
     input['ChatList'].each { |chat| bot.api.send_message(chat_id: chat.to_i, text: message, parse_mode: 'Markdown') }
