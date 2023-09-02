@@ -40,7 +40,7 @@ module Bot
 
         telegram.api.send_message(
           chat_id: chat.id,
-          text: if chat.update(team_id: team_id)
+          text: if chat.update(team_id:)
                   "Слежение за командой #{team.name} (##{team_id}) включено."
                 else
                   'Не удалось включить слежение за командой.'

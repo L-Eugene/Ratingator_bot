@@ -61,7 +61,7 @@ Conditions:
 Globals:
   Function:
     CodeUri: bot/
-    Runtime: ruby2.7
+    Runtime: ruby3.2
     Environment:
       Variables:
         TELEGRAM_TOKEN: !If
@@ -104,7 +104,7 @@ Resources:
     Properties:
       ContentUri: layer
       CompatibleRuntimes:
-        - ruby2.7
+        - ruby3.2
       RetentionPolicy: Delete
     Metadata:
       BuildMethod: makefile

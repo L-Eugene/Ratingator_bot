@@ -1,4 +1,4 @@
-RUBY_VERSION = 2.7.0
+RUBY_VERSION = 3.2.0
 
 build-BotLayer:
 	find . -name Gemfile.lock -exec mv {} Gemfile.lock.bak \;

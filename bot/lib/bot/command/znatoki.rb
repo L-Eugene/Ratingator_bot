@@ -47,7 +47,7 @@ module Bot
         telegram.api.send_message chat_id: chat.id,
                                   reply_to_message: message.message_id,
                                   parse_mode: 'Markdown',
-                                  text: text
+                                  text:
       end
 
       def self.process(chat, message)

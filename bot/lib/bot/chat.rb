@@ -36,9 +36,9 @@ module Bot
     end
 
     def pin_message(message_id, deadline = Date.today)
-      telegram.api.pin_chat_message(chat_id: id, message_id: message_id)
+      telegram.api.pin_chat_message(chat_id: id, message_id:)
 
-      update(pinned: pinned + [message_id: message_id, deadline: deadline.to_s])
+      update(pinned: pinned + [message_id:, deadline: deadline.to_s])
     end
 
     def unpin_messages!

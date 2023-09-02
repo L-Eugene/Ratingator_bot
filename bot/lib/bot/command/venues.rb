@@ -35,7 +35,7 @@ module Bot
           chat_id: chat.id,
           reply_to_message: message.message_id,
           parse_mode: 'Markdown',
-          text: text
+          text:
         )
       end
 
@@ -54,7 +54,7 @@ module Bot
           chat_id: chat.id,
           reply_to_message: message.message_id,
           parse_mode: 'Markdown',
-          text: text
+          text:
         )
       end
 

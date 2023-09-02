@@ -2,7 +2,12 @@
 
 require 'znatoki'
 
-YAML.load_file(File.join(FIXTURES_PATH, 'znatoki', 'datasets.yml')).each do |dataset|
+datasets = YAML.load_file(
+  File.join(FIXTURES_PATH, 'znatoki', 'datasets.yml'),
+  permitted_classes: [Date, Symbol]
+)
+
+datasets.each do |dataset|
   describe dataset[:description] do
     before :each do
       VCR.turn_off!
