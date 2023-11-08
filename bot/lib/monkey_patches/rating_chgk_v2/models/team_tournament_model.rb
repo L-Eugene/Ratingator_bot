@@ -1,12 +1,24 @@
-module MonkeyPatches::RatingChgkV2::Models::TeamTournamentModel
-    # loading tournament results
-    class ::RatingChgkV2::Models::TeamTournamentModel
-        def tournament
-            @tournament ||= RatingChgkV2.client.tournament @idtournament
-        end
+# frozen_string_literal: true
 
-        def result
-            @result ||= tournament.results(includeRatingB: true).detect { |r| r.team['id'] == @idteam }
+module MonkeyPatches
+  module RatingChgkV2
+    module Models
+      module TeamTournamentModel
+        # loading tournament results
+        module ::RatingChgkV2
+          module Models
+            class TeamTournamentModel
+              def tournament
+                @tournament ||= RatingChgkV2.client.tournament @idtournament
+              end
+
+              def result
+                @result ||= tournament.results(includeRatingB: true).detect { |r| r.team['id'] == @idteam }
+              end
+            end
+          end
         end
+      end
     end
+  end
 end

@@ -32,7 +32,7 @@ datasets.each do |dataset|
         Timecop.freeze("#{testcase[:date]} 12:00:00") if testcase.key? :date
         # rubocop:disable Lint/UselessAssignment
         # This var is used in evaluated code
-        data = poll_options
+        data = Bot::PollOptions::Znatoki.new.options
         # rubocop:enable Lint/UselessAssignment
         eval testcase[:expectations]
       end

@@ -8,6 +8,9 @@ AllCops:
 Style/RegexpLiteral:
   EnforcedStyle: percent_r
 
+Style/ClassAndModuleChildren:
+  Enabled: false
+
 Layout/LineLength:
   Max: 120
 

@@ -4,6 +4,18 @@ module Bot
   # Universal methods used anywhere in the code
   module Util
     class << self
+      ROMAN_MONTHS = %w[I II III IV V VI VII VIII IX X XI XII].freeze
+
+      RUSSIAN_DAYS = {
+        'Mon' => 'Пнд',
+        'Tue' => 'Вт',
+        'Wed' => 'Ср',
+        'Thu' => 'Чт',
+        'Fri' => 'Пт',
+        'Sat' => 'Сб',
+        'Sun' => 'Вс'
+      }.freeze
+
       def next_day(str)
         x = Date.parse(str)
         y = x > Date.today ? 0 : 7
@@ -44,6 +56,15 @@ module Bot
         else
           '?'
         end
+      end
+
+      def localize_day_of_week(day)
+        RUSSIAN_DAYS.inject(day) { |s, (en, ru)| s.gsub(%r{^#{en}}, ru) }
+      end
+
+      def roman_to_arabic(number)
+        number.tr!('Х', 'X')
+        (%r{^[IVX]+$} =~ number.to_s.upcase ? ROMAN_MONTHS.find_index(number) + 1 : number).to_i
       end
     end
   end
