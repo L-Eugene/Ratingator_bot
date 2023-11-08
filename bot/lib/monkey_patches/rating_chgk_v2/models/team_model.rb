@@ -7,6 +7,7 @@ module MonkeyPatches
         # loading team ratings from MAII
         module ::RatingChgkV2
           module Models
+            # Monkey-patch to add Team model data
             class TeamModel
               def ratings
                 @ratings ||= ratings_data

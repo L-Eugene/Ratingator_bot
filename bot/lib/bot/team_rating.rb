@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module Bot
+  # Class to build rating statistic for team
   class TeamRating
     attr_reader :current_rating_id, :previous_rating_id
 

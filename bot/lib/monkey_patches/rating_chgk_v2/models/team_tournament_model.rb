@@ -7,6 +7,7 @@ module MonkeyPatches
         # loading tournament results
         module ::RatingChgkV2
           module Models
+            # Monkey-patch to add tournament results data
             class TeamTournamentModel
               def tournament
                 @tournament ||= RatingChgkV2.client.tournament @idtournament
