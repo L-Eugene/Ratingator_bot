@@ -65,7 +65,7 @@ def handler(event:, context:)
         <<~TEXT
           <a href="https://rating.chgk.info/tournament/#{game[:tournament].id}">#{game[:tournament].name}</a>
           #{game[:tournament].questionQty.map { |_, v| v }.sum} вопросов (сложность #{game[:tournament].difficultyForecast || 'не указана'})
-          <b>Начало</b> #{game[:beginning].strftime('%F в %R')}
+          <b>Начало</b> #{game[:beginning].strftime('%F в %R')} (UTC+3)
           <b>Редактор(ы):</b> #{game[:tournament].editors.map { |e| "#{e['name']} #{e['surname']}" }.join(', ')}
           <b>Представитель:</b> #{game[:representative]['name']} #{game[:representative]['surname']}
           <b>Ведущий:</b> #{game[:narrator]['name']} #{game[:narrator]['surname']}
