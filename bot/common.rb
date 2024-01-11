@@ -7,15 +7,16 @@ require 'rating_chgk_v2'
 require 'telegram/bot'
 require 'zeitwerk'
 
+# Loading Monkey-patches
+require_relative "#{__dir__}/lib/monkey_patches/team_model.rb"
+require_relative "#{__dir__}/lib/monkey_patches/team_tournament_model.rb"
+
 loader = Zeitwerk::Loader.new
 loader.push_dir("#{__dir__}/lib")
 loader.setup
 
 # Command processing will not work properly unless it's eager loaded
 loader.eager_load_dir("#{__dir__}/lib/bot/command")
-
-# Load monkey-patches for RatingChgkV2 library
-loader.eager_load_dir("#{__dir__}/lib/monkey_patches")
 
 SUCCESS_RESULT = { statusCode: 200 }.freeze
 
