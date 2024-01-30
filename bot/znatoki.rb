@@ -18,7 +18,7 @@ def create_polls(event:, context:)
   telegram = Telegram::Bot::Client.new(telegram_token)
 
   chats.each do |chat|
-    response = telegram.api.send_poll(
+    message = telegram.api.send_poll(
       chat_id: chat.id,
       question: 'В эти выходные я приду играть',
       options: options.append('Не смогу сыграть').concat(chat.extra_poll_options),
@@ -26,7 +26,7 @@ def create_polls(event:, context:)
       allows_multiple_answers: true
     )
 
-    chat.pin_message(response['result']['message_id'], Bot::Util.next_day('sunday'))
+    chat.pin_message(message.message_id, Bot::Util.next_day('sunday'))
   end
 
   SUCCESS_RESULT
