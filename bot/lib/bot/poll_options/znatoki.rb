@@ -33,7 +33,8 @@ module Bot::PollOptions
 
           record = chgk_client.tournament(tournament[:id])
 
-          next nil if date < Date.today - 7
+          # One day to avoid possible timezone issues
+          next nil if date < Date.today - 1
 
           OpenStruct.new(
             date:,
