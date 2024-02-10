@@ -34,16 +34,6 @@ Parameters:
       - 'false'
     Default: 'true'
 
-  # Setting this variable to true enables tracking announces on https://znatoki.info
-  # If enabled will create poll according to znatoki.info announce
-  AllowZnatoki:
-    Type: String
-    Description: Set this to false to deny /znatoki_on and /znatoki_off bot commands
-    AllowedValues: 
-      - 'true'
-      - 'false'
-    Default: 'false'
-
 Conditions:
   # Secure Storage with all required policy rules will be created
   KeepTokenSecretCond: !Equals
@@ -53,10 +43,6 @@ Conditions:
   # Environment variable will be created to keep token
   KeepTokenEnvCond: !Not
     - Condition: KeepTokenSecretCond
-
-  GetAnnounceFromZnatoki: !Equals
-    - !Ref AllowZnatoki
-    - 'true'
 
 Globals:
   Function:
@@ -72,7 +58,6 @@ Globals:
           - KeepTokenSecretCond
           - !Ref SecretStorage
           - !Ref AWS::NoValue
-        ALLOW_ZNATOKI_POLLS: !Ref AllowZnatoki
         DYNAMO_TABLE: !Ref ChatDBTable
 
 Resources:
@@ -108,30 +93,6 @@ Resources:
       RetentionPolicy: Delete
     Metadata:
       BuildMethod: makefile
-  
-  WatchZnatokiFunction:
-    Type: AWS::Serverless::Function
-    Condition: GetAnnounceFromZnatoki
-    Properties:
-      Handler: znatoki.create_polls
-      Timeout: 15
-      Layers:
-        - !Ref BotLayer
-      Policies:
-        - DynamoDBCrudPolicy:
-            TableName: !Ref ChatDBTable
-      Events:
-        WeeklyScheduleEvent:
-          Type: Schedule
-          Properties:
-            Schedule: cron(0 6 ? * THU *)
-            Input: '{ "action": "create" }'
-  WatchZnatokiLogGroup:
-    Type: AWS::Logs::LogGroup
-    Condition: GetAnnounceFromZnatoki
-    Properties:
-      LogGroupName: !Sub "/aws/lambda/${WatchZnatokiFunction}"
-      RetentionInDays: 14
 
   WatchVenuesFunction:
     Type: AWS::Serverless::Function
