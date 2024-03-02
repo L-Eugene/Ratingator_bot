@@ -14,7 +14,7 @@ module Bot::PollOptions
             @data = @venue.requests(
                 'dateStart[strictly_before]': (Date.today + 3).to_s,
                 'dateStart[strictly_after]': (Date.today + 2).to_s
-            ).select { |r| r.status == 'A' }.map do |request|
+            ).select { |r| %w(A N).include? r.status }.map do |request|
                 tournament = @@client.tournament request.tournamentId
 
                 OpenStruct.new(
