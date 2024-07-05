@@ -20,6 +20,21 @@ module Bot
         end.map { |s| s.length > OPTION_LENGTH_LIMIT ? "#{s[0..(OPTION_LENGTH_LIMIT - 3)]}..." : s }
       end
 
+      def descriptions
+        @data.map do |row|
+          next unless row&.tournament && row&.request
+
+          <<~TEXT
+            <a href="https://rating.chgk.info/tournament/#{row.tournament.id}">#{row.tournament.name}</a>
+            #{row.tournament.questionQty.map { |_, v| v }.sum} вопросов (сложность #{row.tournament.difficultyForecast || 'не указана'})
+            <b>Начало</b> #{row.date.strftime('%F в %R')} (UTC+3)
+            <b>Редактор(ы):</b> #{row.tournament.editors.map { |e| "#{e['name']} #{e['surname']}" }.join(', ')}
+            <b>Представитель:</b> #{row.request.representative['name']} #{row.request.representative['surname']}
+            <b>Ведущий:</b> #{row.request.narrator['name']} #{row.request.narrator['surname']}
+          TEXT
+        end
+      end
+
       private
 
       # Abstract method, should be implemented in a subclass
