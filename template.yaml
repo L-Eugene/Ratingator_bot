@@ -193,7 +193,7 @@ Resources:
         WeeklyScheduleEvent:
           Type: Schedule
           Properties:
-            Schedule: cron(59 13 ? * * *)
+            Schedule: cron(59 7 ? * * *)
   SendPollsLogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
