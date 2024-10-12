@@ -25,7 +25,7 @@ module Bot
 
         text = if match && chat.venues.include?(match[:venue_id].to_i)
                  chat.update(venues: chat.venues - [match[:venue_id].to_i])
-                 "Площадка #{match[:venue_id]} успешно удалена"
+                 "Площадка #{venue_name(match[:venue_id])} успешно удалена из списка наблюдения"
                else
                  'Не удалось найти площадку с таким id'
                end
@@ -46,6 +46,7 @@ module Bot
 
       def self.watch(chat, message)
         list = message.text.split("\n").map(&:strip).grep_v(%r{^/}).map(&:to_i)
+                      .select { |venue_id| venue_exists?(venue_id) }
 
         text = list.empty? ? venue_list(chat) : venue_list_update(chat, list)
 
@@ -59,7 +60,9 @@ module Bot
       end
 
       def self.venue_list(chat)
-        watched = chat.venues.map(&:to_i).map { |v| "#{v}. *удалить:* /venue\\_unwatch\\_#{v}" }.join("\n")
+        watched = chat.venues.map(&:to_i).map do |venue_id|
+          "#{venue_name(venue_id)}. *удалить:* /venue\\_unwatch\\_#{venue_id}"
+        end.join("\n")
 
         <<~TXT
           *На текущий момент вы следите за следующими площадками:*
@@ -75,13 +78,30 @@ module Bot
 
         <<~TXT
           *К списку наблюдения добавлены площадки:*
-          #{list.join("\n")}
+          #{list.map { |venue_id| venue_name(venue_id) }.join("\n")}
         TXT
       end
 
       def self.cmd_help
         [['/venues', 'вывести список наблюдаемых площадок и инструкцию по управлению списком']]
       end
+
+      def self.venue_name(venue_id)
+        @@client ||= RatingChgkV2.client
+        "#{@@client.venue(venue_id).name} (#{venue_id})"
+      rescue RatingChgkV2::Error::NotFound
+        'неизвестная площадка'
+      end
+
+      def self.venue_exists?(venue_id)
+        @@client ||= RatingChgkV2.client
+        @@client.venue(venue_id)
+        true
+      rescue RatingChgkV2::Error::NotFound
+        false
+      end
+
+      private_class_method :venue_name, :venue_exists?
     end
   end
 end
