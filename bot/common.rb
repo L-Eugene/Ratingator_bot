@@ -3,6 +3,7 @@
 require 'aws-record'
 require 'date'
 require 'json'
+require 'ostruct'
 require 'rating_chgk_v2'
 require 'telegram/bot'
 require 'zeitwerk'
