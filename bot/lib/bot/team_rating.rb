@@ -74,7 +74,7 @@ module Bot
         # Make bold if this line is for current team
         bold = city_ratings[index].team.id == @team.id ? '*' : ''
 
-        team_url = "[#{city_ratings[index].team.name}](https://rating.chgk.info/team/#{city_ratings[index].team.id})"
+        team_url = "[#{city_ratings[index].team.name}](https://rating.chgk.info/teams/#{city_ratings[index].team.id})"
 
         "#{bold}#{index + 1}.#{bold} #{team_url} (#{city_ratings[index].rating})"
       end
