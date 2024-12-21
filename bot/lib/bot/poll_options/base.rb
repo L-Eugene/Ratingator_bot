@@ -17,7 +17,7 @@ module Bot
         @data.map do |row|
           "#{Bot::Util.localize_day_of_week row.date.strftime('%a')} #{row.date.strftime('%F %R')} " \
             "#{row.type} #{row.name} #{row.online ? ' 🎧' : ''}"
-        end.map { |s| s.length > OPTION_LENGTH_LIMIT ? "#{s[0..(OPTION_LENGTH_LIMIT - 3)]}..." : s }
+        end.map { |s| s.length > OPTION_LENGTH_LIMIT ? "#{s[0..(OPTION_LENGTH_LIMIT - 3)]}..." : s }.sort
       end
 
       def descriptions
