@@ -20,7 +20,7 @@ def message_handler(event:, context:)
 
   return SUCCESS_RESULT if update&.message.nil?
 
-  Bot::Command::Base.process(Bot::Chat.find_or_create(id: update.message.chat.id), update.message)
+  Bot::Command::Base.process(Bot::ChatLoader.new(update.message.chat.id), update.message)
 
   SUCCESS_RESULT
 end

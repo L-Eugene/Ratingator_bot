@@ -13,7 +13,7 @@ module Bot
 
         klasses.each do |klass|
           puts "Processing command in #{klass} class"
-          klass.process(chat, message)
+          klass.process(chat.load, message)
         end
 
         true
