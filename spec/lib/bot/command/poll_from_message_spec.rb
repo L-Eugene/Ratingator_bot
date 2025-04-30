@@ -32,6 +32,12 @@ describe Bot::Command::PollFromMessage do
 
             expect(described_class.match?(message)).to be false
         end
+
+        it 'should not match message witout text' do
+            message = instance_double('Telegram::Bot::Types::Message', text: nil)
+
+            expect(described_class.match?(message)).to be false
+        end
     end
 
     describe '#process' do

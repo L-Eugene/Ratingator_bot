@@ -5,7 +5,7 @@ module Bot
         # Poll command
         class PollFromMessage < Base
             def self.match?(message)
-                message.text.lines.count { |line| line.match?(/^\[.{,6}\]/) } >= 3
+                (message.text || '').lines.count { |line| line.match?(/^\[.{,6}\]/) } >= 3
             end
         
             def self.process(chat, message)
