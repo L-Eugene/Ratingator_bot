@@ -80,6 +80,30 @@ describe Bot::Command::PollFromMessage do
             described_class.process(@chat, message)
         end
 
+        it 'should truncate long options' do
+            message = instance_double('Telegram::Bot::Types::Message', message_id: 1, text: <<~TEXT)
+                [6.5] Option 1
+                [7] Option 2
+                [8] This is a very long option that exceeds the maximum length of 100 characters allowed for a poll option
+            TEXT
+            expect(@api_double).to receive(:send_poll).with(
+                chat_id: 123,
+                question: 'Выберите варианты:',
+                reply_to_message_id: 1,
+                options: [
+                    '[6.5] Option 1',
+                    '[7] Option 2',
+                    '[8] This is a very long option that exceeds the maximum length of 100 characters allowed for a po...',
+                    'Extra Option 1',
+                    'Extra Option 2'
+                ],
+                is_anonymous: false,
+                allows_multiple_answers: true
+            ).and_return(true)
+
+            described_class.process(@chat, message)
+        end
+
         it 'should split options into several polls if more than 10' do
             message = instance_double('Telegram::Bot::Types::Message', message_id: 1, text: <<~TEXT)
                 [6.5] Option 1

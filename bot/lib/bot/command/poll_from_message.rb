@@ -12,6 +12,7 @@ module Bot
                 options = message.text.lines
                                  .select { |line| line.match(/^\[(.+?)\]\s*(.+)$/) }
                                  .map(&:strip)
+                                 .map { |line| line.size > 100 ? "#{line[0..96]}..." : line }
 
                 telegram = Telegram::Bot::Client.new(telegram_token)
 
