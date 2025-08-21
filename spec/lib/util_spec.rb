@@ -71,4 +71,14 @@ describe Bot::Util do
       expect(subject.surround(string, false)).to eq string
     end
   end
+
+  describe '#next_sunday' do
+    it 'should return next sunday' do
+      expect(subject.next_sunday(Date.parse('2025-08-21'))).to eq Date.parse('2025-08-24')
+    end
+
+    it 'should return next sunday if today is sunday' do
+      expect(subject.next_sunday(Date.parse('2025-08-31'))).to eq Date.parse('2025-09-07')
+    end
+  end
 end

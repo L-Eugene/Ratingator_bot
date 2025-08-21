@@ -19,7 +19,7 @@ module Bot
                 options.each_slice(10 - chat.extra_poll_options.size) do |option_group|
                     telegram.api.send_poll(
                         chat_id: chat.id,
-                        question: 'Выберите варианты:',
+                        question: "Выберите варианты на #{Bot::Util.next_sunday.strftime('%Y-%m-%d')}:",
                         options: option_group.concat(chat.extra_poll_options),
                         is_anonymous: false,
                         reply_to_message_id: message.message_id,

@@ -64,7 +64,7 @@ describe Bot::Command::PollFromMessage do
 
             expect(@api_double).to receive(:send_poll).with(
                 chat_id: 123,
-                question: 'Выберите варианты:',
+                question: "Выберите варианты на #{Bot::Util.next_sunday.strftime('%Y-%m-%d')}:",
                 reply_to_message_id: 1,
                 options: [
                     '[6.5] Option 1',
@@ -88,7 +88,7 @@ describe Bot::Command::PollFromMessage do
             TEXT
             expect(@api_double).to receive(:send_poll).with(
                 chat_id: 123,
-                question: 'Выберите варианты:',
+                question: "Выберите варианты на #{Bot::Util.next_sunday.strftime('%Y-%m-%d')}:",
                 reply_to_message_id: 1,
                 options: [
                     '[6.5] Option 1',
@@ -121,7 +121,7 @@ describe Bot::Command::PollFromMessage do
 
             expect(@api_double).to receive(:send_poll).with(
                 chat_id: 123,
-                question: 'Выберите варианты:',
+                question:"Выберите варианты на #{Bot::Util.next_sunday.strftime('%Y-%m-%d')}:",
                 reply_to_message_id: 1,
                 options: [
                     '[6.5] Option 1',
@@ -141,7 +141,7 @@ describe Bot::Command::PollFromMessage do
 
             expect(@api_double).to receive(:send_poll).with(
                 chat_id: 123,
-                question: 'Выберите варианты:',
+                question: "Выберите варианты на #{Bot::Util.next_sunday.strftime('%Y-%m-%d')}:",
                 reply_to_message_id: 1,
                 options: [
                     '[8] Option 9',

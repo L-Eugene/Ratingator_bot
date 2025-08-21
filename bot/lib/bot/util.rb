@@ -22,6 +22,15 @@ module Bot
         x + y
       end
 
+      # return the Date object for next sunday. If today is sunday, return next sunday
+      def next_sunday(today = Date.today)
+        if today.sunday?
+          today + 7
+        else
+          today + (7 - today.wday) % 7
+        end
+      end
+
       def arrow(number)
         char = case number
                when :zero?.to_proc
