@@ -21,6 +21,9 @@ loader.eager_load_dir("#{__dir__}/lib/bot/command")
 
 SUCCESS_RESULT = { statusCode: 200 }.freeze
 
+Encoding.default_external = Encoding::UTF_8
+Encoding.default_internal = Encoding::UTF_8
+
 def telegram_token
   return ENV['TELEGRAM_TOKEN'] if ENV.key? 'TELEGRAM_TOKEN'
   return File.read('../telegram_token.txt').chomp unless ENV.key? 'AWS_REGION'
