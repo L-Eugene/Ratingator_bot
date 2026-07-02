@@ -13,6 +13,7 @@ module Bot
     list_attr :pinned, default_value: []
     list_attr :venues, default_value: []
     list_attr :extra_poll_options, default_value: []
+    string_attr :timezone, default_value: 'Europe/Minsk'
 
     def self.find_or_create(options)
       find(options) || new(options)

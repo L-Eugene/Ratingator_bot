@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'tzinfo'
+
 module Bot
   # Universal methods used anywhere in the code
   module Util
@@ -74,6 +76,13 @@ module Bot
       def roman_to_arabic(number)
         number.tr!('Х', 'X')
         (%r{^[IVX]+$} =~ number.to_s.upcase ? ROMAN_MONTHS.find_index(number) + 1 : number).to_i
+      end
+
+      def datetime_timezone_new_offset(tz_name, dt = DateTime.now)
+        tz = TZInfo::Timezone.get(tz_name)
+        offset_seconds = tz.period_for_utc(dt.new_offset(0)).utc_total_offset
+        offset_rational = Rational(offset_seconds, 86400) # 86400 seconds in a day
+        dt.new_offset(offset_rational)
       end
     end
   end

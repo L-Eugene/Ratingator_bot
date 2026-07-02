@@ -20,7 +20,7 @@ def create_polls(event:, context:)
       message = telegram.api.send_poll(
         chat_id: chat.id,
         question: 'Я приду играть',
-        options: venues[venue_id].options.dup.append('Не смогу сыграть').concat(chat.extra_poll_options),
+        options: venues[venue_id].options(chat).dup.append('Не смогу сыграть').concat(chat.extra_poll_options),
         is_anonymous: false,
         allows_multiple_answers: true
       )
@@ -32,7 +32,7 @@ def create_polls(event:, context:)
       telegram.api.send_message(
         chat_id: chat.id,
         reply_to_message_id: message.message_id,
-        text: venues[venue_id].descriptions.join("\n\n"),
+        text: venues[venue_id].descriptions(descriptions).join("\n\n"),
         link_preview_options: Telegram::Bot::Types::LinkPreviewOptions.new(is_disabled: true),
         parse_mode: 'HTML'
       )

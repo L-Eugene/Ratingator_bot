@@ -81,4 +81,54 @@ describe Bot::Util do
       expect(subject.next_sunday(Date.parse('2025-08-31'))).to eq Date.parse('2025-09-07')
     end
   end
+
+  describe '#datetime_timezone_new_offset' do
+    let(:utc_dt) { DateTime.parse('2022-06-27T12:00:00+00:00') }
+
+    it 'should return a DateTime' do
+      expect(subject.datetime_timezone_new_offset('Europe/Moscow', utc_dt)).to be_a DateTime
+    end
+
+    it 'should apply Moscow offset (+03:00)' do
+      result = subject.datetime_timezone_new_offset('Europe/Moscow', utc_dt)
+      expect(result.offset).to eq Rational(3, 24)
+    end
+
+    it 'should represent the same instant in time' do
+      result = subject.datetime_timezone_new_offset('Europe/Moscow', utc_dt)
+      expect(result.new_offset(0)).to eq utc_dt.new_offset(0)
+    end
+
+    it 'should apply UTC offset for Etc/UTC' do
+      result = subject.datetime_timezone_new_offset('Etc/UTC', utc_dt)
+      expect(result.offset).to eq 0
+    end
+
+    it 'should apply summer time (DST) offset for Europe/Berlin in June (+02:00)' do
+      result = subject.datetime_timezone_new_offset('Europe/Berlin', utc_dt)
+      expect(result.offset).to eq Rational(2, 24)
+    end
+
+    it 'should apply winter time offset for Europe/Berlin in January (+01:00)' do
+      winter_dt = DateTime.parse('2022-01-15T12:00:00+00:00')
+      result = subject.datetime_timezone_new_offset('Europe/Berlin', winter_dt)
+      expect(result.offset).to eq Rational(1, 24)
+    end
+
+    it 'should apply negative offset for America/New_York in June (-04:00 DST)' do
+      result = subject.datetime_timezone_new_offset('America/New_York', utc_dt)
+      expect(result.offset).to eq Rational(-4, 24)
+    end
+
+    it 'should default to DateTime.now when dt is not provided' do
+      result = subject.datetime_timezone_new_offset('Europe/Moscow')
+      expect(result).to be_a DateTime
+      expect(result.offset).to eq Rational(3, 24)
+    end
+
+    it 'should raise error for invalid timezone name' do
+      expect { subject.datetime_timezone_new_offset('Invalid/Timezone', utc_dt) }
+        .to raise_error(TZInfo::InvalidTimezoneIdentifier)
+    end
+  end
 end

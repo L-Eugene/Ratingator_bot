@@ -16,8 +16,8 @@ module Bot::PollOptions
 
     def fetch_data
       @data = @venue.requests(
-        'dateStart[strictly_before]': (Date.today + 3).to_s,
-        'dateStart[strictly_after]': (Date.today + 2).to_s
+        'dateStart[strictly_before]': (Date.today + 1).to_s,
+        'dateStart[strictly_after]': (Date.today + 0).to_s
       ).select { |r| %w[A N].include? r.status }.map do |request|
         tournament = @@client.tournament request.tournamentId
 
