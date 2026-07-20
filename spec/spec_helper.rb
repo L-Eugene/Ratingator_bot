@@ -26,9 +26,12 @@ FIXTURES_PATH = File.join File.dirname(__FILE__), 'fixtures'
 VCR.configure do |c|
   c.hook_into :faraday
   c.default_cassette_options = {
-    decode_compressed_response: true
+    decode_compressed_response: true,
+    record: :once
   }
   c.cassette_library_dir = FIXTURES_PATH
+  c.allow_http_connections_when_no_cassette = false
+  c.filter_sensitive_data('<TELEGRAM_TOKEN>') { ENV['TELEGRAM_TOKEN'] }
 end
 
 RSpec.configure do |config|
@@ -42,7 +45,7 @@ RSpec.configure do |config|
 
   config.shared_context_metadata_behavior = :apply_to_host_groups
 
-  WebMock.allow_net_connect!
+  WebMock.disable_net_connect!(allow_localhost: true)
   WebMock::API.prepend(Module.new do
     extend self
     def stub_request!(*args)

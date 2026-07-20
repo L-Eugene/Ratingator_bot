@@ -55,6 +55,34 @@ Template accepts 3 parameters:
 1. `KeepTokensSecret` - flag to choose whether you want AWS to keep your token in SecretsManager or as environment variable. Values: `true`/`false`
 1. `AllowSelfRegistration` - flag to choose if we want to allow users to enable team tracking manually with `/watch` command. Values: `true`/`false`
 
+## Testing
+
+Run tests with:
+
+```bash
+bundle exec rspec
+```
+
+Test order is randomized and the default seed is pinned for reproducibility. To rerun with a custom seed:
+
+```bash
+bundle exec rspec --seed 12345
+```
+
+### Network and fixtures policy
+
+1. External HTTP is blocked by default in tests.
+1. Localhost requests are allowed.
+1. API integration tests must use VCR cassettes from `spec/fixtures`.
+1. Missing cassette + external HTTP will fail fast.
+
+### Cassette lifecycle
+
+1. Naming convention: group cassettes by feature directory, for example `venues/one_tournament`.
+1. Re-record when upstream API contracts change, response payload shape changes, or fixture time assumptions become outdated.
+1. Time-sensitive tests should freeze time (for example via Timecop) before recording and while replaying.
+1. Keep timezone assumptions explicit in specs to avoid DST-related drift.
+
 ## Author
 
 Eugene Lapeko
